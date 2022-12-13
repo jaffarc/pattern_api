@@ -1,0 +1,21 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "dotenv": "16.0.2",
+    "express": "^4.18.1",
+    "i18n": "0.15.1",
+    "joi": "^17.6.3",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^4.5.0"
+  }
+}
