@@ -1,18 +1,6 @@
-const joi = require('joi');
-// module.exports = () =>({
-//     body:join.object().keys({
-//         content: join.string().required(),
-//         created_at: join.string().isoDate().required()
-//     })
-// })
+const Joi = require("joi");
+const infoSchema = Joi.object({
+  id: Joi.number()
+}).required();
 
-module.exports = infoSchema = {
-    path: 'param',
-    schema: {
-        id:joi.string().regex(/[0-9]{4}/).required()
-    }
-};
-
-// headers : join.object().keys({
-
-// })
+module.exports = { infoSchema };

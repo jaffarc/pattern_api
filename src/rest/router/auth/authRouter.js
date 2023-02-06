@@ -1,14 +1,12 @@
 module.exports = [
     {
         method: 'post',
-        path: '/auth',
+        argument: '/auth',
         description:'authentica o user',
         name:'auth',
-        validate:{
-            header: 'authSchema',
-            body: 'authSchema'
-        },
-        controller: 'authController'
-
+        validate: 'authSchema',
+        path: ['body', 'headers'],
+        controller: 'authController',
+        status: true  
     }
 ]

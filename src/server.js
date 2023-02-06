@@ -1,54 +1,57 @@
+'use strict';
 const express = require('express'),
-  {json, urlencoded} = require('body-parser'),
   morgan = require('morgan'),
   i18n = require('i18n'),
-  app = express();
-
-  // console.log(`${__dirname}/.env.${process.env.NODE_ENV }`)
+  { json, urlencoded } = require('body-parser'),
+  cors = require('cors');
 require('dotenv').config({
-  path: `${__dirname}/.env.${process.env.NODE_ENV }`
+  path: `.env.${process.env.NODE_ENV}`
 });
 
-app.set('port', (process.env.PORT || 3080));
+const app = express();
 
-app.use((req, res, next) => {
-  const _send = res.send;
-  let sent = false;
-  res.send = function (data) {
-    if (sent) return;
-    _send.bind(res)(data);
-    sent = true;
-  };
-  res.setHeader('Content-Security-Policy', 'script-src "self" https://apis.google.com');
-  next();
-});
-
-app.all('*', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  //res.header('Access-Control-Allow-Origin', req.headers.host);
-  res.header('Access-Control-Allow-Methods', 'GET, POST');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Headers', 'Content-type, Accept, Authorization');
-  //console.log('IP: ', req.connection.remoteAddress);
-  next();
-});
 
 i18n.configure({
   locales: ['br', 'en'],
-  directory: __dirname + '/config/locales',
-  register: global,
+  defaultLocale: 'br',
+  autoReload: true,
+  directory: __dirname + '/locales',
+  register: 'global'
 });
-
+app.disable('etag');
 app.disable('x-powered-by');
+app.options('*', cors());
 app.use(
   i18n.init,
-  morgan('dev'),
-  json({ limit: '1000MB', extended: true }),
-  urlencoded({ limit: '1000MB', extended: true })
+  morgan(`${process.env.MORGAN}`),
+  json({ limit: '500kb' }),
+  urlencoded({ extended: true })
+
 );
 
+// console.log(accessLogStream.token('combined'));
+app.all('*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Headers', 'Content-type, Accept, Authorization');
+  next();
+});
+
+/**
+ * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado
+ */
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError &&
+    err.status >= 400 && err.status < 500 &&
+    err.message.indexOf('JSON') !== -1) {
+    return res.status(500).jsonp({ sucess: false, result: 'Object json invalid' });
+  }
+  next();
+});
+
+// console.log(app);
 app.use(require('./rest/router/registerRouter'));
 
-// console.log(process.env.DB_HOST);
-
 module.exports = app;
+

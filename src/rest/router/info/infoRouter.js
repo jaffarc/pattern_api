@@ -1,13 +1,13 @@
 module.exports = [
     {
         method: 'get',
-        path: '/:id',
+        argument: '/:id',
         description:'information api status',
         name:'info',
-        validate:{
-            infoSchema: 'params'
-        },
-        controller: 'infoController'
+        validate:'infoSchema',
+        path: 'params',
+        controller: 'infoController',
+        status: true,
 
     }
 ]
