@@ -39,28 +39,6 @@ for (const filePath of routerSync(`${__dirname}/`)) {
   }
 }
 
-//   for (let i = 0; i < routers.length; ++i) {
-//     let validates = [];
-//     try {
-//       const { name, method, path, validate, controller, argument, status } =
-//         routers[i];
-//       if (status) {
-//         // console.log(routers[i])
-//         console.log("sss", path, validate);
-//         router[method](
-//           argument,
-//           middlewareValidate(path, validate, name),
-//           require(`./${name}/${controller}`)
-//         );
-//       }
-//     } catch (error) {
-//       const pf = String(error).match(
-//         /(\/.*?\/)((?:[^\/]|\\\/)+?)(?:(?<!\\)\s|$)/
-//       );
-//       console.error(`Path ${pf[1]} or file ${pf[2]} not found.`);
-//     }
-//   }
-
 router.use((req, res, next) => {
   if (req.originalUrl && req.originalUrl.split("/").pop() === "favicon.ico") {
     return res.sendStatus(204);
