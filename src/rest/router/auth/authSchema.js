@@ -1,14 +1,14 @@
-const joi = require('joi');
+const joi = require("joi");
 
-const authSchema =  joi.object().keys({
- body:{
-     last_name: joi.string().required(),
-     first_name: joi.string().required(),
- }, 
- headers: {
-    'x-app-id': joi.string().required(),
-    'app-auth': joi.string().required()
-}
-});
- 
-module.exports = {authSchema} 
+const headersSchema = joi.object().keys({
+    "id": joi.number().required(),
+})
+
+const bodySchema = joi.object().keys({
+        last: joi.string().required(),
+        name: joi.string().empty(''),
+        date: joi.string().optional()
+})
+
+
+module.exports = {bodySchema, headersSchema};

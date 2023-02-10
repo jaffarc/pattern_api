@@ -4,6 +4,7 @@ const { Router } = require("express");
 const router = Router();
 const { middlewareValidate } = require("../middlewares/validateSchema");
 
+
 function* routerSync(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
 
@@ -57,5 +58,7 @@ router.use((req, res, next) => {
     JSON.stringify({ code: 401, message: "Unauthorized referral acess" })
   );
 });
+
+
 
 module.exports = router;

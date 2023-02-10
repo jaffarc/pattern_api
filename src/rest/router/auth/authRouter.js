@@ -5,7 +5,7 @@ module.exports = [
         description:'authentica o user',
         name:'auth',
         validate: 'authSchema',
-        path: ['body', 'headers'],
+        path: ['headers','body'],
         controller: 'authController',
         status: true  
     }

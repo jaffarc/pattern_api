@@ -5,7 +5,7 @@ module.exports = [
         description:'information api status',
         name:'info',
         validate:'infoSchema',
-        path: 'params',
+        path: ['params'],
         controller: 'infoController',
         status: true,
 
