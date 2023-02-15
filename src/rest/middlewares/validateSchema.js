@@ -9,7 +9,7 @@ const middlewareValidate = (property, schema, name) => {
     for (let i = 0; i < property.length; i++) {
       // console.log("__", schemas[`${property[i]}Schema`]);
 
-      let { error } = schemas[`${property[i]}Schema`].validate(
+      let error = schemas[`${property[i]}Schema`].validate(
         req[property[i]],
         {
           abortEarly: false, // include all errors
@@ -17,13 +17,15 @@ const middlewareValidate = (property, schema, name) => {
           stripUnknown: true, // remove unknown props
         }
       );
+      
+      console.log(JSON.stringify(error))
   
-      if (error) {
-          const { details } = error;
+      // if (error) {
+      //     const   { details } = error ;
 
-        const message = details.map((i) => i.message).join(",");
-          return resJsonP(res, 422, false, message.replace(/(?:[\'"])/g, ""));
-      }
+      //   const message = details.map((i) => i.message).join(",");
+      //     return resJsonP(res, 422, false, message.replace(/(?:[\'"])/g, ""));
+      // }
     }
     next();
   };
