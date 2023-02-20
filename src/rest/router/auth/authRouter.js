@@ -7,6 +7,7 @@ module.exports = [
         validate: 'authSchema',
         path: ['headers','body'],
         controller: 'authController',
+        service:'authService',
         status: true  
     }
 ]
