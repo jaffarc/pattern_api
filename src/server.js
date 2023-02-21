@@ -15,7 +15,7 @@ i18n.configure({
   locales: ['br', 'en'],
   defaultLocale: 'br',
   autoReload: true,
-  directory: __dirname + '/locales',
+  directory: __dirname + '/config/locales',
   register: 'global'
 });
 app.disable('etag');
@@ -29,6 +29,7 @@ app.use(
 
 );
 
+
 // console.log(accessLogStream.token('combined'));
 app.all('*', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -38,6 +39,7 @@ app.all('*', (req, res, next) => {
   next();
 });
 
+console.log(i18n.getLocale());
 /**
  * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado
  */

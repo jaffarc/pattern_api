@@ -1,0 +1,66 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "router_api",
+    "dateExported": "2023-02-21T03:21:03.763Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "39ecf95e-840f-45cb-b824-9f77521d2ec1",
+            "colId": "23a606ac-296c-470a-a7d8-a6b8f91ea5ed",
+            "containerId": "",
+            "name": "http://localhost:3080/auth",
+            "url": "http://localhost:3080/auth",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-02-21T03:20:03.549Z",
+            "modified": "2023-02-21T03:20:03.550Z",
+            "headers": [
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                },
+                {
+                    "name": "ID",
+                    "value": "878"
+                },
+                {
+                    "name": "Accept-Language",
+                    "value": "br"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"name\":\"\",\n    \"last\": \"\",\n    \"date\":  \"1888-08-12\"\n} ",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "e6a42fe0-ded5-4df9-9643-fe7d50d1ad76",
+            "colId": "23a606ac-296c-470a-a7d8-a6b8f91ea5ed",
+            "containerId": "",
+            "name": "https://localhost:3080/info",
+            "url": "http://localhost:3080/6387caadb7232cd9f2bbcfd3",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2023-02-21T03:20:36.298Z",
+            "modified": "2023-02-21T03:20:36.298Z",
+            "headers": [
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                },
+                {
+                    "name": "Accept-Language",
+                    "value": "br"
+                }
+            ],
+            "params": [],
+            "tests": []
+        }
+    ]
+}

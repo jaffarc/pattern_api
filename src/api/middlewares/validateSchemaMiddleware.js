@@ -1,5 +1,4 @@
 const Joi = require("joi");
-// const i18n = require('i18n');
 const { resJsonP } = require("../../utils/helper");
 
 const middlewareValidate = (property, schema, name) => {
@@ -22,10 +21,10 @@ const middlewareValidate = (property, schema, name) => {
           const { details } = error;
 
           const message = details.map((i) => i.message)[0];
-          console.log(JSON.stringify(message));
+          //console.log(JSON.stringify(message));
+
           let msg = message.replace(/(?:[\'"])/g, "")
           return resJsonP(res, 422, false, `${res.__(msg)}` );  
-          //`${i18n.__('EXPI_ITEM_CART')}`
         }
       }
       next();
