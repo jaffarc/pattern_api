@@ -51,7 +51,7 @@ app.use((err, req, res, next) => {
 });
 
 // console.log(app);
-app.use(require('./rest/router/registerRouter'));
+app.use(require('./api/router/registerRouter'));
 
 module.exports = app;
 

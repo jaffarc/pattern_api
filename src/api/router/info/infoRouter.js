@@ -6,7 +6,6 @@ module.exports = [
         name:'info',
         validate:'infoSchema',
         path: ['params'],
-        controller: 'infoController',
         service:'infoService',
         status: true,
 

@@ -2,7 +2,9 @@ const fs = require("fs");
 const path = require("path");
 const { Router } = require("express");
 const router = Router();
-const { middlewareValidate } = require("../middlewares/validateSchema");
+const {
+  middlewareValidate,
+} = require("../middlewares/validateSchemaMiddleware");
 const { middlewareController } = require("../middlewares/controllerMiddleware");
 
 function* routerSync(dir) {
@@ -23,14 +25,13 @@ function* routerSync(dir) {
 
 for (const filePath of routerSync(`${__dirname}/`)) {
   try {
-    const { name, method, path, validate, controller, service, argument, status } =
+    const { name, method, path, validate, service, argument, status } =
       require(filePath)[0];
     if (status) {
       router[method](
         argument,
         middlewareValidate(path, validate, name),
         middlewareController(name, service)
-       // require(`./${name}/${controller}`)
       );
     }
   } catch (error) {
@@ -59,7 +60,5 @@ router.use((req, res, next) => {
     JSON.stringify({ code: 401, message: "Unauthorized referral acess" })
   );
 });
-
-
 
 module.exports = router;

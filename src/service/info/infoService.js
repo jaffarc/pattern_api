@@ -1,6 +1,6 @@
 const infoService = async () => {
     try {
-        return { result: 'online' }
+        return  'online' 
     } catch (error) {
         throw error
     }
