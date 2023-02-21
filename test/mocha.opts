@@ -1,0 +1,7 @@
+-R spec
+--ui bdd
+--recursive
+--colors
+--full-trace
+--reporter list
+--timeout 500000

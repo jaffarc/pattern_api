@@ -2,3 +2,6 @@
 node_modules/
 Dockerfile
 test.js
+mochawesome-report/
+coverage/
+.nyc_output
