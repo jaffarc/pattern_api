@@ -15,18 +15,16 @@ i18n.configure({
   locales: ['br', 'en'],
   defaultLocale: 'br',
   autoReload: true,
-  directory: __dirname + '/config/locales',
+  directory: __dirname + '/locales',
   register: 'global'
 });
-app.disable('etag');
-app.disable('x-powered-by');
+app.disable('etag', 'x-powered-by');
 app.options('*', cors());
 app.use(
   i18n.init,
   morgan(`${process.env.MORGAN}`),
   json({ limit: '500kb' }),
   urlencoded({ extended: true })
-
 );
 
 
@@ -52,7 +50,6 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// console.log(app);
 app.use(require('./api/router/registerRouter'));
 
 module.exports = app;
