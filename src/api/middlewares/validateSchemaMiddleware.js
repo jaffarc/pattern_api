@@ -2,13 +2,12 @@ const Joi = require("joi");
 const { resJsonP } = require("../../utils/helper");
 
 const middlewareValidate = (property, schema, name) => {
-  try {
-    // console.log("___", property);
-    return (req, res, next) => {
-      let schemas = require(`../router/${name}/${schema}`);
-      
-      for (let i = 0; i < property.length; i++) {
 
+    return (req, res, next) => {
+      try {
+      let schemas = require(`../router/${name}/${schema}`);
+
+      for (let i = 0; i < property.length; i++) {
         let { error } = schemas[`${property[i]}Schema`].validate(
           req[property[i]],
           {
@@ -21,17 +20,26 @@ const middlewareValidate = (property, schema, name) => {
           const { details } = error;
 
           const message = details.map((i) => i.message)[0];
-          //console.log(JSON.stringify(message));
+          console.log(message);
 
-          let msg = message.replace(/(?:[\'"])/g, "")
-          return resJsonP(res, 422, false, `${res.__(msg)}` );  
+          let msg = message.replace(/(?:[\'"])/g, "");
+          // return res.send('Error')
+         throw `${res.__(msg)}` //resJsonP(res, 422, false, `${res.__(msg)}`);
+          // return;
         }
+        if (!error) {
+          next();
+
+          }
+        }
+        console.log('veio')
+      } catch (error) {
+        console.log('caiu no error', error)
+        
+        return resJsonP(res, 422, false, error);
       }
-      next();
     };
-  } catch (error) {
-    return resJsonP(res, 422, false, error);
-  }
+
 };
 
 module.exports = {

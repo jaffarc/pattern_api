@@ -34,15 +34,23 @@ for (const filePath of routerSync(`${__dirname}/`)) {
       service,
       argument,
       handlers,
+      handlersFirts = false,
       status,
     } = require(filePath)[0];
     let middleware = [
-      middlewareValidate(path, validate, name),
       dinamicMiddleware(handlers),
+      middlewareValidate(path, validate, name),
     ];
     // console.log(router.middlewares)
+    // middleware = handlersFirts ? middleware.reverse() : middleware;
+    console.log(middleware);
     if (status) {
-      router[method](argument, middleware, middlewareController(name, service));
+      router[method](
+        argument,
+        dinamicMiddleware(handlers),
+        middlewareValidate(path, validate, name),
+        middlewareController(name, service)
+      );
     }
   } catch (error) {
     const pf = String(error).match(

@@ -12,10 +12,11 @@
 */
 const authService = async () => {
     try {
-        return {
-            date: new Date(),
-            token: 'fdsafaskfjksajasjlljf'
-        } 
+        // return {
+        //     date: new Date(),
+        //     token: 'fdsafaskfjksajasjlljf'
+        // } 
+        throw 'Já existe um aluno com essas informações';
 
     } catch (error) {
         throw error

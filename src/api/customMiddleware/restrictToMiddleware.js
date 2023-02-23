@@ -1,5 +1,5 @@
 exports.restrictToMiddleware =(req, res, next) => {
-  console.log("checkout aqui faz");
+  console.log("checkout aqui faz", req.body);
   next();
 }
 
