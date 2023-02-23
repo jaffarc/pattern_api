@@ -6,6 +6,7 @@ const {
   middlewareValidate,
 } = require("../middlewares/validateSchemaMiddleware");
 const { middlewareController } = require("../middlewares/controllerMiddleware");
+const { dinamicMiddleware } = require("../middlewares/dinamicMiddleware");
 
 function* routerSync(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -23,14 +24,46 @@ function* routerSync(dir) {
   }
 }
 
+// let customMiddleware1
+// var handlers = ['restrictToMiddleware'];
+
+// function dinamicMiddleware(req, res, next) {
+//   function run(index) {
+//     if (index < handlers.length) {
+//       handlers[index](req, res, function (err) {
+//         if (err) {
+//           return next(err);
+//         }
+//         index += 1;
+//         run(index);
+//       });
+//     }
+//     next();
+//   }
+//   run(0);
+// }
+
+// router.use(dinamicMiddleware);
+
 for (const filePath of routerSync(`${__dirname}/`)) {
   try {
-    const { name, method, path, validate, service, argument, status } =
-      require(filePath)[0];
+    const {
+      name,
+      method,
+      path,
+      validate,
+      service,
+      argument,
+      handlers,
+      status,
+    } = require(filePath)[0];
+
+    // console.log(router.middlewares)
     if (status) {
       router[method](
         argument,
         middlewareValidate(path, validate, name),
+        dinamicMiddleware(handlers),
         middlewareController(name, service)
       );
     }
@@ -56,9 +89,8 @@ router.use((req, res, next) => {
       .jsonp({ code: "unAuthorized", message: "Unauthorized referral acess" });
   }
 
-  return next(
-    JSON.stringify({ code: 401, message: "Unauthorized referral acess" })
-  );
+  next();
+  // JSON.stringify({ code: 401, message: "Unauthorized referral acess" })
 });
 
 module.exports = router;

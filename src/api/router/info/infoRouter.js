@@ -7,6 +7,7 @@ module.exports = [
         validate:'infoSchema',
         path: ['params'],
         service:'infoService',
+        handlers : ['restrictToMiddleware'],
         status: true,
 
     }

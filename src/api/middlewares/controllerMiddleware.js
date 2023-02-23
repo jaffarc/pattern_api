@@ -2,7 +2,9 @@ const { resJsonP } = require("../../utils/helper");
 const middlewareController = (path, serverName) => {
   let service = require(`../../service/${path}/${serverName}`);
   return (req, res, next) => {
+
     try {
+
       service[serverName]()
         .then((result) => {
           return resJsonP(res, 200, true, result);

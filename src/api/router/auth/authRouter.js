@@ -7,6 +7,7 @@ module.exports = [
         validate: 'authSchema',
         path: ['headers','body'],
         service:'authService',
+         handlers : ['restrictToMiddleware','validateDateMiddleware'],
         status: true  
     }
 ]

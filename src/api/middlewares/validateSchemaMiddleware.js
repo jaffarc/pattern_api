@@ -6,7 +6,7 @@ const middlewareValidate = (property, schema, name) => {
     // console.log("___", property);
     return (req, res, next) => {
       let schemas = require(`../router/${name}/${schema}`);
-
+      
       for (let i = 0; i < property.length; i++) {
 
         let { error } = schemas[`${property[i]}Schema`].validate(
