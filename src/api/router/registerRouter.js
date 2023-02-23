@@ -24,26 +24,6 @@ function* routerSync(dir) {
   }
 }
 
-// let customMiddleware1
-// var handlers = ['restrictToMiddleware'];
-
-// function dinamicMiddleware(req, res, next) {
-//   function run(index) {
-//     if (index < handlers.length) {
-//       handlers[index](req, res, function (err) {
-//         if (err) {
-//           return next(err);
-//         }
-//         index += 1;
-//         run(index);
-//       });
-//     }
-//     next();
-//   }
-//   run(0);
-// }
-
-// router.use(dinamicMiddleware);
 
 for (const filePath of routerSync(`${__dirname}/`)) {
   try {
@@ -90,7 +70,6 @@ router.use((req, res, next) => {
   }
 
   next();
-  // JSON.stringify({ code: 401, message: "Unauthorized referral acess" })
 });
 
 module.exports = router;
