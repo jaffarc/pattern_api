@@ -1,0 +1,14 @@
+{
+  "require": [
+   
+  ],
+  "all": true,
+  "exclude": ["node_modules", "**/coverage/**", "commitlint.config.js", "test", "lint-staged.config.js", "mochawesome-report", "coverage"],
+  "include": ["src/**/*"],
+  "check-coverage": true,
+  "per-file": false,
+  "branches": 85,
+  "lines": 85,
+  "functions": 85,
+  "statements": 85
+}
