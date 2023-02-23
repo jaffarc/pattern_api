@@ -16,7 +16,7 @@ const authService = async () => {
         //     date: new Date(),
         //     token: 'fdsafaskfjksajasjlljf'
         // } 
-        throw 'Já existe um aluno com essas informações';
+        throw 'informações';
 
     } catch (error) {
         throw error
