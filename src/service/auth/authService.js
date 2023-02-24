@@ -16,6 +16,7 @@ const authService = async () => {
             date: new Date(),
             token: 'fdsafaskfjksajasjlljf'
         } 
+        // throw 'informações';
 
     } catch (error) {
         throw error

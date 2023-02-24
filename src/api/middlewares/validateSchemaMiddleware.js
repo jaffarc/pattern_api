@@ -1,38 +1,41 @@
-const Joi = require("joi");
-const { resJsonP } = require("../../utils/helper");
+function middlewareValidate(property, schema, name) {
+  return (req, res, next) => {
+    try {
+      // code block to be executed
 
-const middlewareValidate = (property, schema, name) => {
-  try {
-    // console.log("___", property);
-    return (req, res, next) => {
       let schemas = require(`../router/${name}/${schema}`);
-
+      let responseSent = false; // variável de controle
+      let msgErro;
       for (let i = 0; i < property.length; i++) {
-
         let { error } = schemas[`${property[i]}Schema`].validate(
           req[property[i]],
           {
-            abortEarly: false, // include all errors
-            allowUnknown: true, // ignore unknown props
-            stripUnknown: true, // remove unknown props
+            abortEarly: false,
+            allowUnknown: true,
+            stripUnknown: true,
           }
         );
+        // console.log("Error", property.length);
         if (error) {
           const { details } = error;
-
           const message = details.map((i) => i.message)[0];
-          //console.log(JSON.stringify(message));
-
-          let msg = message.replace(/(?:[\'"])/g, "")
-          return resJsonP(res, 422, false, `${res.__(msg)}` );  
+          msgErro = message.replace(/(?:[\'"])/g, "");
+          if (property.length >= i) {
+            responseSent = true; // resposta enviada
+            break;
+          }
         }
       }
+      if (responseSent) {
+        throw { message: `${res.__(msgErro)}` };
+      }
+
       next();
-    };
-  } catch (error) {
-    return resJsonP(res, 422, false, error);
-  }
-};
+    } catch (err) {
+      next(err);
+    }
+  };
+}
 
 module.exports = {
   middlewareValidate,
