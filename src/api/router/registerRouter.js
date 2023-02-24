@@ -62,7 +62,7 @@ for (const filePath of getRouteFiles(__dirname)) {
 const ErrorHandler = (err, req, res, next) => {
   console.log(err);
   const errStatus = err.statusCode || 422;
-  const errMsg = err.message || "Something went wrong";
+  const errMsg = err.message || "Alguma coisa aconteceu";
   res.status(errStatus).json({
     success: false,
     message: errMsg,
@@ -86,31 +86,5 @@ router.use((req, res, next) => {
   next();
 });
 
-// function logResponseBody(req, res, next) {
-//   var oldWrite = res.write,
-//       oldEnd = res.end;
-
-//   var chunks = [];
-
-//   res.write = function (chunk) {
-//     chunks.push(chunk);
-
-//     return oldWrite.apply(res, arguments);
-//   };
-
-//   res.end = function (chunk) {
-//     if (chunk)
-//       chunks.push(chunk);
-
-//     var body = Buffer.concat(chunks).toString('utf8');
-//     console.log(req.path, body);
-
-//     oldEnd.apply(res, arguments);
-//   };
-
-//   next();
-// }
-
-// router.use(logResponseBody);
 
 module.exports = router;
