@@ -1,4 +1,7 @@
-exports.validateDateMiddleware =(req, res, next) => {
-    console.log("validateDateMiddleware", req.body.date);
+exports.validateDateMiddleware = () => {
+ return (req, res, next) => {
+    console.log("validateDateMiddleware");
+    req["user"] = { role: "user" };
     next();
-  }
+  };
+};

@@ -7,7 +7,7 @@
     "start": "NODE_ENV=dev nodemon .",
     "dev": "NODE_ENV=dev nodemon .",
     "coverage": "NODE_ENV=dev nyc --reporter=html --reporter=text  mocha --recursive test/**/**/*.spec.js --reporter mochawesome --reporter-options ,reportFilename=index.html --timeout 50000 --exit",
-    "test": "NODE_ENV=dev mocha ./test/**/*.test.js --reporter min  --timeout 50000 --exit ",
+    "test": "NODE_ENV=dev mocha ./test/**/**/*.spec.js --reporter min  --timeout 50000 --exit ",
     "jsdoc": "jsdoc -a all -c jsdoc.json -r -R README.md index.js -d docs/jsdoc && jsdoc2md --files index.js > docs/API.md"
   },
   "keywords": [],
@@ -20,11 +20,12 @@
     "express": "^4.18.1",
     "i18n": "0.15.1",
     "joi": "^17.6.3",
-    "morgan": "^1.10.0",
-    "swagger-ui-express": "^4.5.0"
+    "swagger-ui-express": "^4.5.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "chai": "^4.3.7",
+    "chai-spies": "^1.0.0",
     "docdash": "^2.0.1",
     "jsdoc": "^4.0.2",
     "jsdoc-to-markdown": "^8.0.0",

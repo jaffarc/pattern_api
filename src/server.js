@@ -38,6 +38,8 @@ app.all("*", (req, res, next) => {
   next();
 });
 
+
+
 // console.log(i18n.getLocale());
 /**
  * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado
