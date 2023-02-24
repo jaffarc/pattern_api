@@ -6,14 +6,15 @@ function importFileMiddleware(key) {
   return requires;
 }
 
-const dinamicMiddleware = (handlers) => {
+const dinamicMiddleware = (handlers, params) => {
   const middleware = importFileMiddleware(handlers);
 
   return (req, res, next) => {
     function run(index) {
       if (index < handlers.length) {
         const handler = middleware[handlers[index]][handlers[index]];
-        handler(req, res, function (err) {
+        // console.log(typeof params[handlers[index]])
+        handler(params[handlers[index]])(req, res, function (err) {
           if (err) {
             return next(err);
           }

@@ -35,11 +35,12 @@ for (const filePath of getRouteFiles(__dirname)) {
       argument,
       handlers,
       handlersFirst = false,
+      params,
       status,
     } = require(filePath)[0];
 
     const middlewares = [
-      dinamicMiddleware(handlers),
+      dinamicMiddleware(handlers, params),
       middlewareValidate(routePath, validate, name),
     ];
 
@@ -50,7 +51,7 @@ for (const filePath of getRouteFiles(__dirname)) {
     if (status) {
       router[method](
         argument,
-        middlewares,
+        ...middlewares,
         middlewareController(name, service)
       );
     }
@@ -68,6 +69,7 @@ const ErrorHandler = (err, req, res, next) => {
   });
 };
 router.use(ErrorHandler);
+
 router.use((req, res, next) => {
   if (req.originalUrl.endsWith("/favicon.ico")) {
     res.sendStatus(204);
@@ -83,5 +85,32 @@ router.use((req, res, next) => {
   }
   next();
 });
+
+// function logResponseBody(req, res, next) {
+//   var oldWrite = res.write,
+//       oldEnd = res.end;
+
+//   var chunks = [];
+
+//   res.write = function (chunk) {
+//     chunks.push(chunk);
+
+//     return oldWrite.apply(res, arguments);
+//   };
+
+//   res.end = function (chunk) {
+//     if (chunk)
+//       chunks.push(chunk);
+
+//     var body = Buffer.concat(chunks).toString('utf8');
+//     console.log(req.path, body);
+
+//     oldEnd.apply(res, arguments);
+//   };
+
+//   next();
+// }
+
+// router.use(logResponseBody);
 
 module.exports = router;

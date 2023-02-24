@@ -38,6 +38,8 @@ app.all("*", (req, res, next) => {
   next();
 });
 
+
+
 // console.log(i18n.getLocale());
 /**
  * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado
@@ -57,6 +59,33 @@ app.use((err, req, res, next) => {
 });
 
 
+app.use((req, res, next) => {
+  let requestTime = Date.now();
+  res.on('finish', () => {
+    console.log({
+      all:function (chunk, encoding, callback) {
+        logMessage(options.debug, 'response write', 'append chunk=' + chunk);
+        if (
+          !resBodyBufLimitedExceeded &&
+          totalChunkLength(resBodyBuf, chunk) < options.responseMaxBodySize
+        ) {
+          resBodyBuf = appendChunk(resBodyBuf, chunk);
+        } else {
+          resBodyBufLimitedExceeded = true;
+        }
+        res._mo_write(chunk, encoding, callback);
+      },
+      url: req.path,
+      method: req.method,
+      user: req.user ? req.user._id : '',
+      body: req.body,
+      responseTime: (Date.now() - requestTime) / 1000, // convert to seconds
+      day: new Date(requestTime).getUTCDay(),
+      hour: `${new Date(requestTime).getHours()}:${new Date(requestTime).getUTCMinutes()}`
+    });
+  });
+  next();
+});
 app.use(require("./api/router/registerRouter"));
 
 module.exports = app;
