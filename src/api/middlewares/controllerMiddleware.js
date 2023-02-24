@@ -1,5 +1,5 @@
-const { resJsonP } = require("../../utils/helper");
 const middlewareController = (path, serverName) => {
+  const { resJsonP } = require("../../utils/helper");
   let service = require(`../../service/${path}/${serverName}`);
   return (req, res) => {
     service[serverName]()
@@ -7,7 +7,6 @@ const middlewareController = (path, serverName) => {
         return resJsonP(res, 200, true, result);
       })
       .catch((err) => {
-        // console.log('caiu no controle');
         return resJsonP(res, 400, false, err);
       });
   };

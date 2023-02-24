@@ -12,11 +12,11 @@
 */
 const authService = async () => {
     try {
-        // return {
-        //     date: new Date(),
-        //     token: 'fdsafaskfjksajasjlljf'
-        // } 
-        throw 'informações';
+        return {
+            date: new Date(),
+            token: 'fdsafaskfjksajasjlljf'
+        } 
+        // throw 'informações';
 
     } catch (error) {
         throw error

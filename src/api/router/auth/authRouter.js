@@ -1,7 +1,11 @@
+
+/** @module bookshelf 
+ * @author Jaffar Cardoso <http://gitlab.com/jaffarc>
+*/
 module.exports = [
   {
-    method: "post",
-    argument: "/auth",
+    method: "post",  /** tipo da rota exe: router.post */
+    argument: "/auth",  /** path da rota  */
     description: "authentica o user",
     name: "auth",
     validate: "authSchema",
