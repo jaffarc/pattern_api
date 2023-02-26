@@ -15,7 +15,8 @@ function* getRouteFiles(dir) {
   for (const file of files) {
     if (file.isDirectory()) {
       yield* getRouteFiles(path.join(dir, file.name));
-    } else if (
+    }
+    if (
       /((?:([R-r]outer)))/g.test(file.name) &&
       file.name !== path.basename(__filename)
     ) {
