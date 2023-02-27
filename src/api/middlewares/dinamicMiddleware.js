@@ -8,8 +8,10 @@ function importFileMiddleware(key) {
 
 const dinamicMiddleware = (handlers, params) => {
   const middleware = importFileMiddleware(handlers);
-
   return (req, res, next) => {
+    if (!handlers) {
+      next();
+    }
     function run(index) {
       if (index < handlers.length) {
         const handler = middleware[handlers[index]][handlers[index]];

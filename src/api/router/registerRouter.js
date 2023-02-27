@@ -34,16 +34,16 @@ for (const filePath of getRouteFiles(__dirname)) {
       validate,
       service,
       argument,
-      handlers,
+      handlers = null,
       handlersFirst = false,
-      params,
       status,
     } = require(filePath)[0];
 
-    const middlewares = [
-      dinamicMiddleware(handlers, params),
-      middlewareValidate(routePath, validate, name),
-    ];
+    const middlewares = [middlewareValidate(routePath, validate, name)];
+
+    if (handlers) {
+      middlewares.push(dinamicMiddleware(handlers));
+    }
 
     if (handlersFirst) {
       middlewares.reverse();
@@ -52,7 +52,7 @@ for (const filePath of getRouteFiles(__dirname)) {
     if (status) {
       router[method](
         argument,
-        ...middlewares,
+        middlewares,
         middlewareController(name, service)
       );
     }
@@ -63,14 +63,13 @@ for (const filePath of getRouteFiles(__dirname)) {
 const ErrorHandler = (err, req, res, next) => {
   console.log(err);
   const errStatus = err.statusCode || 422;
-  const errMsg = err.message || "Alguma coisa aconteceu";
+  const errMsg = err.message || "Something went wrong";
   res.status(errStatus).json({
     success: false,
     message: errMsg,
   });
 };
 router.use(ErrorHandler);
-
 router.use((req, res, next) => {
   if (req.originalUrl.endsWith("/favicon.ico")) {
     res.sendStatus(204);
@@ -86,6 +85,5 @@ router.use((req, res, next) => {
   }
   next();
 });
-
 
 module.exports = router;
