@@ -34,15 +34,18 @@ for (const filePath of getRouteFiles(__dirname)) {
       validate,
       service,
       argument,
-      handlers = null,
+      handlers,
+      params,
       handlersFirst = false,
       status,
     } = require(filePath)[0];
 
+    // console.log('handlers', handlers)
     const middlewares = [middlewareValidate(routePath, validate, name)];
 
+    // console.log(handlers)
     if (handlers) {
-      middlewares.push(dinamicMiddleware(handlers));
+      middlewares.push(dinamicMiddleware(handlers, params));
     }
 
     if (handlersFirst) {

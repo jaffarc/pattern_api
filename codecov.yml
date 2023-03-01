@@ -1,6 +1,6 @@
 codecov:
   require_ci_to_pass: yes
-
+  allow_coverage_offsets: True
 coverage:
   precision: 2
   round: down
