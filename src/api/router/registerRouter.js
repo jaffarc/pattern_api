@@ -8,6 +8,9 @@ const {
 } = require("../middlewares/validateSchemaMiddleware");
 const { middlewareController } = require("../middlewares/controllerMiddleware");
 const { dinamicMiddleware } = require("../middlewares/dinamicMiddleware");
+const {
+  capturelogMiddleware,
+} = require("../customMiddleware/capturelogMiddleware");
 
 function* getRouteFiles(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -36,20 +39,21 @@ for (const filePath of getRouteFiles(__dirname)) {
       argument,
       handlers,
       params,
+      getLog,
       handlersFirst = false,
       status,
     } = require(filePath)[0];
 
-    // console.log('handlers', handlers)
     const middlewares = [middlewareValidate(routePath, validate, name)];
 
-    // console.log(handlers)
     if (handlers) {
       middlewares.push(dinamicMiddleware(handlers, params));
     }
-
     if (handlersFirst) {
       middlewares.reverse();
+    }
+    if (getLog) {
+      middlewares.unshift(capturelogMiddleware());
     }
 
     if (status) {
@@ -63,8 +67,8 @@ for (const filePath of getRouteFiles(__dirname)) {
     throw { message: error };
   }
 }
+
 const ErrorHandler = (err, req, res, next) => {
-  console.log(err);
   const errStatus = err.statusCode || 422;
   const errMsg = err.message || "Something went wrong";
   res.status(errStatus).json({
@@ -73,6 +77,7 @@ const ErrorHandler = (err, req, res, next) => {
   });
 };
 router.use(ErrorHandler);
+
 router.use((req, res, next) => {
   if (req.originalUrl.endsWith("/favicon.ico")) {
     res.sendStatus(204);

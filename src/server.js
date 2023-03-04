@@ -28,7 +28,6 @@ app.use(
 
 // console.log(accessLogStream.token('combined'));
 app.all("*", (req, res, next) => {
-
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST");
   res.header("Access-Control-Allow-Headers", "Content-Type");
@@ -36,11 +35,48 @@ app.all("*", (req, res, next) => {
     "Access-Control-Allow-Headers",
     "Content-type, Accept, Authorization"
   );
+
   next();
 });
 
+// app.use((req, res, next) => {
+//   const antigoSend = res.send;
+//   res.send = function (data) {
+//     console.log('Resposta capturada:', data);
+//     antigoSend.call(this, data);
+//   };
+//   next();
+// });
 
-
+// app.use((req, res, next) => {
+//   const antigoSend = res.send;
+//   res.send = function (data) {
+//     // console.log('Resposta capturada:', data);
+//     const response = {
+//       body: req.body,
+//       response: {
+//         time: new Date().toISOString(),
+//         status: res.statusCode,
+//         headers: res.getHeaders(),
+//         body: data
+//       }
+//     };
+//     console.log('Objeto de resposta:', response);
+//     antigoSend.call(this, data);
+//   };
+//   res.on('finish', () => {
+//     console.log('Objeto de resposta no evento finish:', {
+//       body: req.body,
+//       response: {
+//         time: new Date().toISOString(),
+//         status: res.statusCode,
+//         headers: res.getHeaders(),
+//         body: res.locals.responseData || null
+//       }
+//     });
+//   });
+//   next();
+// });
 // console.log(i18n.getLocale());
 /**
  * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado
@@ -58,7 +94,6 @@ app.use((err, req, res, next) => {
   }
   next();
 });
-
 
 app.use(require("./api/router/registerRouter"));
 
