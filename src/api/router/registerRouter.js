@@ -52,6 +52,7 @@ for (const filePath of getRouteFiles(__dirname)) {
     if (handlersFirst) {
       middlewares.reverse();
     }
+    console.log('getLog', getLog);
     if (getLog) {
       middlewares.unshift(capturelogMiddleware());
     }
