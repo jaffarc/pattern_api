@@ -1,16 +1,26 @@
 const fs = require("fs");
 const path = require("path");
 const { Router } = require("express");
-const router = Router();
-
-const {
-  middlewareValidate,
-} = require("../middlewares/validateSchemaMiddleware");
+const {middlewareValidate} = require("../middlewares/validateSchemaMiddleware");
 const { middlewareController } = require("../middlewares/controllerMiddleware");
 const { dinamicMiddleware } = require("../middlewares/dinamicMiddleware");
-const {
-  capturelogMiddleware,
-} = require("../customMiddleware/capturelogMiddleware");
+const {capturelogMiddleware} = require("../customMiddleware/capturelogMiddleware");
+
+const router = Router()
+
+
+const  Swagger  = require('../swagger/classSwagger');
+
+const RouteLoader = require('./createSwagger');
+const routeConfigs = RouteLoader.loadRoutes();
+
+console.log(routeConfigs)
+const swaggerRouter = Swagger.initialize(routeConfigs);
+
+
+router.use(swaggerRouter)
+
+
 
 function* getRouteFiles(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -28,12 +38,15 @@ function* getRouteFiles(dir) {
   }
 }
 
+
+
 for (const filePath of getRouteFiles(__dirname)) {
   try {
     const {
       name,
       method,
       path: routePath,
+      description,
       validate,
       service,
       argument,
@@ -52,10 +65,11 @@ for (const filePath of getRouteFiles(__dirname)) {
     if (handlersFirst) {
       middlewares.reverse();
     }
-    console.log('getLog', getLog);
+    
     if (getLog) {
       middlewares.unshift(capturelogMiddleware());
     }
+
 
     if (status) {
       router[method](
@@ -68,6 +82,8 @@ for (const filePath of getRouteFiles(__dirname)) {
     throw { message: error };
   }
 }
+
+//  router[ ];
 
 const ErrorHandler = (err, req, res, next) => {
   const errStatus = err.statusCode || 422;
@@ -94,5 +110,6 @@ router.use((req, res, next) => {
   }
   next();
 });
+
 
 module.exports = router;

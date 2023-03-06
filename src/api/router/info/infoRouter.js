@@ -8,7 +8,7 @@ module.exports = [
     path: ["params"],
     service: "infoService",
     handlers: [],
-    getLog: true,
+    getLog: false,
     handlersFirts: false,
     status: true,
   },

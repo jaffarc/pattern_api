@@ -15,7 +15,7 @@ module.exports = [
     params:{
       restrictToMiddleware: ['user']  /** caso o Middleware seja personalizado e tenha params informar aqui funcion e params */
     },
-    getLog: true, /** captura o log completo entrada e saida da rota */
+    getLog: false, /** captura o log completo entrada e saida da rota */
     handlersFirts: false, /** caso o middlewareValidate seja seja executado primeiro deixar como true  se os  handlers seja primeiro false */
     status: true, /** desativar rota */
   },
