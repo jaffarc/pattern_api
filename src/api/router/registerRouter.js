@@ -1,46 +1,28 @@
-const fs = require("fs");
-const path = require("path");
+
 const { Router } = require("express");
-const {middlewareValidate} = require("../middlewares/validateSchemaMiddleware");
+const {
+  middlewareValidate,
+} = require("../middlewares/validateSchemaMiddleware");
 const { middlewareController } = require("../middlewares/controllerMiddleware");
 const { dinamicMiddleware } = require("../middlewares/dinamicMiddleware");
-const {capturelogMiddleware} = require("../customMiddleware/capturelogMiddleware");
+const {
+  capturelogMiddleware,
+} = require("../customMiddleware/capturelogMiddleware");
 
-const router = Router()
+const router = Router();
 
-
-const  Swagger  = require('../swagger/classSwagger');
-
+const Swagger = require("../swagger/classSwagger");
 const RouteLoader = require('./createSwagger');
+
 const routeConfigs = RouteLoader.loadRoutes();
 
-console.log(routeConfigs)
+
+// console.log(routeConfigs)
 const swaggerRouter = Swagger.initialize(routeConfigs);
 
+router.use(swaggerRouter);
 
-router.use(swaggerRouter)
-
-
-
-function* getRouteFiles(dir) {
-  const files = fs.readdirSync(dir, { withFileTypes: true });
-
-  for (const file of files) {
-    if (file.isDirectory()) {
-      yield* getRouteFiles(path.join(dir, file.name));
-    }
-    if (
-      /((?:([R-r]outer)))/g.test(file.name) &&
-      file.name !== path.basename(__filename)
-    ) {
-      yield `${dir}/${file.name}`;
-    }
-  }
-}
-
-
-
-for (const filePath of getRouteFiles(__dirname)) {
+for (const filePath of routeConfigs) {
   try {
     const {
       name,
@@ -55,7 +37,7 @@ for (const filePath of getRouteFiles(__dirname)) {
       getLog,
       handlersFirst = false,
       status,
-    } = require(filePath)[0];
+    } = filePath;
 
     const middlewares = [middlewareValidate(routePath, validate, name)];
 
@@ -65,11 +47,10 @@ for (const filePath of getRouteFiles(__dirname)) {
     if (handlersFirst) {
       middlewares.reverse();
     }
-    
+
     if (getLog) {
       middlewares.unshift(capturelogMiddleware());
     }
-
 
     if (status) {
       router[method](
@@ -110,6 +91,5 @@ router.use((req, res, next) => {
   }
   next();
 });
-
 
 module.exports = router;

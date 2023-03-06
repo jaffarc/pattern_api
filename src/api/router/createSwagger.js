@@ -6,12 +6,13 @@ class RouteLoader {
     const files = fs.readdirSync(dir, { withFileTypes: true });
 
     for (const file of files) {
+      
       if (file.isDirectory()) {
         yield* RouteLoader.getRouteFiles(path.join(dir, file.name));
       }
       if (
         /((?:([R-r]outer)))/g.test(file.name) &&
-        file.name !== path.basename(__filename)
+        file.name !== path.basename(__filename) && file.name !== 'registerRouter.js'
       ) {
         yield `${dir}/${file.name}`;
       }
@@ -23,6 +24,9 @@ class RouteLoader {
 // console.log(path.('../api/router/'))
     for (const filePath of RouteLoader.getRouteFiles(__dirname)) {
       try {
+        console.log(filePath)
+        const routeConfig = require(filePath)[0];
+        if (!routeConfig) continue; // skip to the next file if object is empty
         const {
           name,
           method,
@@ -35,8 +39,8 @@ class RouteLoader {
           params,
           getLog,
           handlersFirst = false,
-          status,
-        } = require(filePath)[0];
+          status
+        } = routeConfig;
 
         routeConfigs.push({
           name,
