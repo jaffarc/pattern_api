@@ -1,7 +1,7 @@
 {
   "name": "pattern_api",
   "version": "1.0.0",
-  "description": "pattern para uma api rest com doc gerado dinamic, com middleware dinamic e personalizado por rota",
+  "description": "Pattern para uma api rest com doc gerado dinamic, com middleware dinamic e personalizado por rota",
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=dev nodemon .",

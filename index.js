@@ -10,7 +10,7 @@ require('dotenv').config({
 
 const CLUSTER = (process.env.CLUSTER === 'true');
 
-console.log(CLUSTER)
+// console.log(CLUSTER)
 process.on('unhandledRejection', rejectionErr => {
   console.log('unhandledRejection Err::', rejectionErr);
   console.log('unhandledRejection Stack::', JSON.stringify(rejectionErr.stack));

@@ -2,26 +2,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { Router } = require('express');
 const joi = require("joi");
-
-
-const paramsSchema = joi.object().keys({
-  id: joi.string()
-        .regex(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
-        .required()
-}).required()
-.error((errors) => Object.assign(...errors, { message: 'ERRO_OBJECT_ID' }));
-
-// Cria um objeto vazio
-const schemaKeys = {};
-
-// Obtém as chaves do schema
-const schemaKeyNames = Object.keys(paramsSchema.describe().keys);
-
-// Preenche o objeto com as chaves e a indicação de se são obrigatórias ou não
-for (const keyName of schemaKeyNames) {
-  const keySchema = paramsSchema.describe().keys[keyName];
-  schemaKeys[keyName] = { required: keySchema.presence === 'required' };
-}
+const pkg = require('../../../package.json')
 
 class Swagger {
   static initialize(routeConfigs) {
@@ -31,9 +12,9 @@ class Swagger {
       swaggerDefinition: {
         openapi: '3.0.0',
         info: {
-          title: 'My API',
-          version: '1.0.0',
-          description: 'Descrição da API',
+          title: `${pkg.name}`,
+          version: `${pkg.version}`,
+          description: `${pkg.description}`,
         },
       },
       apis: ['../router/**/*.js'],
@@ -62,18 +43,34 @@ class Swagger {
 
         handlers.push(middleware);
       }
-
+// console.log(routeConfig);
       path[routeConfig.method] = {
         summary: routeConfig.description,
-        requestBody: {
-          content: {
-            'application/json': {
-              schema: {
-                $ref: `#/components/schemas/${schemaKeys}`,
-              },
-            },
-          },
-        },
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "ID da collection",
+            "required": false,
+            "hidden": true,
+            "schema": {
+              "type": "string",
+              "format": "ObjectId"
+            }
+          }
+        ],
+        // requestBody: {
+        //   content: {
+        //     'application/json': {
+        //       schema: {
+        //         $ref: `#/components/schemas/${schemaKeys}`,
+        //       },
+        //     },
+        //   },
+        // },
         responses: {
           '200': {
             description: 'Resposta de sucesso',
@@ -88,18 +85,18 @@ class Swagger {
 
     const swagger = {
       ...options.swaggerDefinition,
-      // components: {
-      //   schemas: {
-      //     authSchema: {
-      //       type: 'object',
-      //       properties: {
-      //         username: { type: 'string' },
-      //         password: { type: 'string' },
-      //       },
-      //       required: ['username', 'password'],
-      //     },
-      //   },
-      // },
+      components: {
+        schemas: {
+          authSchema: {
+            type: 'object',
+            properties: {
+              username: { type: 'string' },
+              password: { type: 'string' },
+            },
+            required: ['username', 'password'],
+          },
+        },
+      },
       paths,
     };
 
