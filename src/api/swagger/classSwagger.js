@@ -1,6 +1,27 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { Router } = require('express');
+const joi = require("joi");
+
+
+const paramsSchema = joi.object().keys({
+  id: joi.string()
+        .regex(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
+        .required()
+}).required()
+.error((errors) => Object.assign(...errors, { message: 'ERRO_OBJECT_ID' }));
+
+// Cria um objeto vazio
+const schemaKeys = {};
+
+// Obtém as chaves do schema
+const schemaKeyNames = Object.keys(paramsSchema.describe().keys);
+
+// Preenche o objeto com as chaves e a indicação de se são obrigatórias ou não
+for (const keyName of schemaKeyNames) {
+  const keySchema = paramsSchema.describe().keys[keyName];
+  schemaKeys[keyName] = { required: keySchema.presence === 'required' };
+}
 
 class Swagger {
   static initialize(routeConfigs) {
@@ -15,7 +36,7 @@ class Swagger {
           description: 'Descrição da API',
         },
       },
-      apis: [''],
+      apis: ['../router/**/*.js'],
     };
 
   
@@ -48,7 +69,7 @@ class Swagger {
           content: {
             'application/json': {
               schema: {
-                $ref: `#/components/schemas/${routeConfig.validate}`,
+                $ref: `#/components/schemas/${schemaKeys}`,
               },
             },
           },
@@ -67,18 +88,18 @@ class Swagger {
 
     const swagger = {
       ...options.swaggerDefinition,
-      components: {
-        schemas: {
-          authSchema: {
-            type: 'object',
-            properties: {
-              username: { type: 'string' },
-              password: { type: 'string' },
-            },
-            required: ['username', 'password'],
-          },
-        },
-      },
+      // components: {
+      //   schemas: {
+      //     authSchema: {
+      //       type: 'object',
+      //       properties: {
+      //         username: { type: 'string' },
+      //         password: { type: 'string' },
+      //       },
+      //       required: ['username', 'password'],
+      //     },
+      //   },
+      // },
       paths,
     };
 

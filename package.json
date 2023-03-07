@@ -8,7 +8,13 @@
     "dev": "NODE_ENV=dev nodemon .",
     "coverage": "NODE_ENV=dev nyc --reporter=html --reporter=text  mocha --recursive test/**/**/*.spec.js --reporter mochawesome --reporter-options ,reportFilename=index.html --timeout 50000 --exit",
     "test": "NODE_ENV=dev mocha --recursive test/**/**/*.spec.js --reporter min  --timeout 50000 --exit ",
-    "jsdoc": "jsdoc -a all -c jsdoc.json -r -R README.md index.js -d docs/jsdoc && jsdoc2md --files index.js > docs/API.md"
+    "jsdoc": "jsdoc -a all -c jsdoc.json -r -R README.md index.js -d docs/jsdoc && jsdoc2md --files index.js > docs/API.md",
+    "verificar-jsdoc": "node verificar.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run verificar-jsdoc"
+    }
   },
   "keywords": [],
   "author": "",
@@ -28,6 +34,7 @@
     "chai": "^4.3.7",
     "chai-spies": "^1.0.0",
     "docdash": "^2.0.1",
+    "husky": "^8.0.3",
     "jsdoc": "^4.0.2",
     "jsdoc-to-markdown": "^8.0.0",
     "mocha": "^10.2.0",
