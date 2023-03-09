@@ -1,8 +1,8 @@
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-const { Router } = require('express');
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+const { Router } = require("express");
 const joi = require("joi");
-const pkg = require('../../../package.json')
+const pkg = require("../../../package.json");
 
 class Swagger {
   static initialize(routeConfigs) {
@@ -10,106 +10,100 @@ class Swagger {
 
     const options = {
       swaggerDefinition: {
-        openapi: '3.0.0',
+        openapi: "3.0.0",
         info: {
           title: `${pkg.name}`,
           version: `${pkg.version}`,
           description: `${pkg.description}`,
         },
       },
-      apis: ['../router/**/*.js'],
+      apis: ["../router/**/*.js"],
     };
-
-  
     const paths = {};
-    for (const routeConfig of routeConfigs) {
-      const path = {};
-      const handlers = [];
+    for (let a = 0; a < routeConfigs.length; a++) {
+      const schema = require(`../router/${routeConfigs[a].name}/${routeConfigs[a].validate}`);
+      if (schema[Object.keys(schema)[0]]) {
+        let parameters = [];
 
-      for (const handler of routeConfig.handlers) {
-        const middleware = {
-          operationId: handler,
-        };
+        for (let i = 0; i < routeConfigs[a].path.length; i++) {
+          const pathKey = routeConfigs[a].path[i];
+          const schemaKey = `${pathKey}Schema`;
+          const schemaObject = schema[schemaKey];
 
-        if (routeConfig.params && routeConfig.params[handler]) {
-          middleware.parameters = routeConfig.params[handler].map((param) => ({
-            name: param.name,
-            in: param.in,
-            schema: {
-              type: param.type,
-            },
-          }));
+          const schemaKeyNames =
+            schemaObject && schemaObject.$_terms
+              ? schemaObject.$_terms.keys.map((key) => ({
+                  key: key.key,
+                  type: key.schema.type,
+                  required:
+                    key.schema._flags.presence === "required" ? true : false,
+                }))
+              : [];
+
+          let properties = [];
+    
+          for (let p of schemaKeyNames) {
+            // console.log({ [p.key]: { type: p.type } });
+
+            properties.push({ [p.key]:  p.type  });
+          }
+
+          const Parameter = { in: pathKey, properties };
+
+          console.log(Parameter);
+          parameters.push(Parameter);
         }
 
-        handlers.push(middleware);
-      }
-// console.log(routeConfig);
-      path[routeConfig.method] = {
-        summary: routeConfig.description,
-        "tags": [
-          "auth"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID da collection",
-            "required": false,
-            "hidden": true,
-            "schema": {
-              "type": "string",
-              "format": "ObjectId"
-            }
-          }
-        ],
-        // requestBody: {
-        //   content: {
-        //     'application/json': {
-        //       schema: {
-        //         $ref: `#/components/schemas/${schemaKeys}`,
-        //       },
-        //     },
-        //   },
-        // },
-        responses: {
-          '200': {
-            description: 'Resposta de sucesso',
+        const path = {};
+        path[routeConfigs[a].method] = {
+          summary: routeConfigs[a].description,
+          tags: [routeConfigs[a].name],
+          parameters: parameters,
+          responses: {
+            200: {
+              description: "Resposta de sucesso",
+            },
           },
-        },
-        'x-handler': routeConfig.service,
-        'x-middlewares': handlers,
-      };
-
-      paths[routeConfig.argument] = path;
+        };
+        paths[routeConfigs[a].argument] = {
+          ...paths[routeConfigs[a].argument],
+          ...path,
+        };
+      }
     }
-
+    // console.log(JSON.stringify(paths, null, 3))
     const swagger = {
       ...options.swaggerDefinition,
       components: {
         schemas: {
           authSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              username: { type: 'string' },
-              password: { type: 'string' },
+              last: {
+                type: "string",
+              },
+              name: {
+                type: "string",
+              },
+              date: {
+                type: "string",
+              },
             },
-            required: ['username', 'password'],
+            // required: ["username", "password"],
           },
         },
       },
       paths,
     };
 
-  
     const swaggerOptions = {
       swaggerDefinition: swagger,
       apis: [],
     };
 
-  
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
-    router.use('/api-docs', swaggerUi.serve);
-    router.get('/api-docs', swaggerUi.setup(swaggerSpec));
+    router.use("/api-docs", swaggerUi.serve);
+    router.get("/api-docs", swaggerUi.setup(swaggerSpec));
 
     return router;
   }

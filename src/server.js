@@ -5,7 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const express = require("express");
 const { json, urlencoded } = require("body-parser");
-
+  
 
 // const swaggerUi = require("swagger-ui-express");
 require("dotenv").config({
@@ -14,6 +14,7 @@ require("dotenv").config({
 
 
 // const { buscarDados } = require("analiticlog");
+
 
 const app = express();
 i18n.configure({
@@ -62,6 +63,8 @@ app.use((err, req, res, next) => {
   }
   next();
 });
+
+
 
 app.use(require("./api/router/registerRouter"));
 
