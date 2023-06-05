@@ -11,6 +11,9 @@
     "jsdoc": "jsdoc -a all -c jsdoc.json -r -R README.md index.js -d docs/jsdoc && jsdoc2md --files index.js > docs/API.md",
     "verificar-jsdoc": "node verificar.js"
   },
+  "imports": {
+    "#*": "./src/*"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "npm run verificar-jsdoc"
@@ -26,6 +29,7 @@
     "express": "^4.18.1",
     "i18n": "0.15.1",
     "joi": "^17.6.3",
+    "mongoose": "^7.2.2",
     "morgan": "^1.10.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-dist": "^4.17.1",

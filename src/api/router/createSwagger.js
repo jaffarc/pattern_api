@@ -24,7 +24,7 @@ class RouteLoader {
 // console.log(path.('../api/router/'))
     for (const filePath of RouteLoader.getRouteFiles(__dirname)) {
       try {
-        console.log(filePath)
+        // console.log(filePath)
         const routeConfig = require(filePath)[0];
         if (!routeConfig) continue; // skip to the next file if object is empty
         const {
