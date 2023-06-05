@@ -15,7 +15,7 @@ class RouteLog {
         return typeof middleware === 'function'
           ? `'Inline Code'`
           : middleware;
-      });
+      }); 
     }
 
     this.middlewares = middlewareTexts.join(', ') || null;

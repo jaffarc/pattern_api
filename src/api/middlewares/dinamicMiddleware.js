@@ -24,7 +24,6 @@ const dinamicMiddleware = (handlers, params) => {
           return next();
         }
         const handler = middleware[handlers[index]][handlers[index]];
-        console.log("AAA", params, handlers[index]);
         handler(params ? params[handlers[index]] : "")(
           req,
           res,
@@ -32,7 +31,6 @@ const dinamicMiddleware = (handlers, params) => {
             if (err) {
               return next(err);
             }
-            console.log("aaaa", handlers, index);
             run((index += 1));
           }
         );

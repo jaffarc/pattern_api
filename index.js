@@ -10,7 +10,7 @@ require('dotenv').config({
 
 const CLUSTER = (process.env.CLUSTER === 'true');
 
-console.log(CLUSTER)
+// console.log(CLUSTER)
 process.on('unhandledRejection', rejectionErr => {
   console.log('unhandledRejection Err::', rejectionErr);
   console.log('unhandledRejection Stack::', JSON.stringify(rejectionErr.stack));
@@ -62,6 +62,8 @@ const setUpExpress = () => {
     console.error('with headers', serCtx.req.headers);
   });
 };
+
+
 const formatMemoryUsage = (data) => `${Math.round((data / 1024 / 1024) * 100) / 100} MB`;
 const memoryUsage = {
   rss: `${formatMemoryUsage(memoryData.rss)} -> Resident Set Size - total memory allocated for the process execution`,
@@ -81,8 +83,28 @@ const setupServer = (isCluster) => {
     return setupWorkerProcesses();
   }
 
+ setUpExpress();
 
-  return setUpExpress();
+  if (CLUSTER && cluster.isMaster) {
+    process.on('SIGUSR2', async () => {
+      const workers = Object.values(cluster.workers)
+      for (const worker of workers) {
+        console.log(`Stopping worker: ${worker.process.pid}`)
+        worker.disconnect()
+        await once(worker, 'exit')
+        if (!worker.exitedAfterDisconnect) continue
+        const newWorker = cluster.fork()
+        await once(newWorker, 'listening')
+      }
+    })
+    // Signal 1: Start new worker before killing old worker
+    process.on('SIGUSR1', () => {
+      console.log('Starting new worker')
+      cluster.fork()
+    })
+  
+    console.log(`Master cluster setting up ${workers.length} workers`)
+  }
 };
 
 
