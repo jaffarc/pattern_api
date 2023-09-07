@@ -10,8 +10,9 @@
  * @returns {Promise.<pending>} Resultado da operação
  * @throws Emite erro e cria um log com o seu conteúdo
 */
-const authService = async () => {
+const authService = async ({body}) => {
     try {
+        console.log('AAAAA', body);
         return {
             date: new Date(),
             token: 'fdsafaskfjksajasjlljf'

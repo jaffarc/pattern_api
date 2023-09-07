@@ -10,6 +10,6 @@ module.exports = [
     handlers: [],
     getLog: true,
     handlersFirts: false,
-    status: true,
+    status: false,
   },
 ];

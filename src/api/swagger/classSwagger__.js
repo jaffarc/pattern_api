@@ -4,108 +4,107 @@ const { Router } = require("express");
 const joi = require("joi");
 const pkg = require("../../../package.json");
 
-// const test = {
-//   swaggerDefinition: {
-//     openapi: "3.0.0",
-//     info: {
-//       title: "pattern_api",
-//       version: "1.0.0",
-//       description:
-//         "Pattern para uma api rest com doc gerado dinamic, com middleware dinamic e personalizado por rota",
-//     },
-//     components: {
-//       schemas: {
-//         auth: {
-//           type: "object",
-//           properties: {
-//             last: {
-//               type: "string",
-//               required: true,
-//             },
-//             name: {
-//               type: "string",
-//               required: false,
-//             },
-//             date: {
-//               type: "string",
-//               required: false,
-//             },
-//           },
-//         },
-//         id: {
-//           type: "string",
-//           properties: {
-//             id: {
-//               type: "string",
-//               required: true,
-//             },
-//           },
-//         },
-//       },
-//     },
-//     paths: {
-//       "/{id}": {
-//         get: {
-//           summary: "authentica o user",
-//           consumes: ["application/json"],
-//           tags: ["info"],
-//           produces: "application/json",
-//           parameters: [
-//             {
-//               in: "path",
-//               name: "id",
-//               required: true,
-//               schema: {
-//                 $ref: "#/components/schemas/id",
-//               },
-//             },
-//           ],
-//           responses: {
-//             200: {
-//               description: "Resposta de sucesso",
-//             },
-//           },
-//         },
-//       },
-//       "/auth": {
-//         post: {
-//           summary: "authentica o user",
-//           consumes: ["application/json"],
-//           tags: ["auth"],
-//           produces: "application/json",
-//           requestBody: {
-//             description: "Created user object",
-//             content: {
-//               "application/json": {
-//                 schema: {
-//                   $ref: "#/components/schemas/auth",
-//                 },
-//               },
-//             },
-//           },
-//           parameters: [
-//             {
-//               in: "header",
-//               name: "id",
-//               required: true,
+const test = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "pattern_api",
+      version: "1.0.0",
+      description:
+        "Pattern para uma api rest com doc gerado dinamic, com middleware dinamic e personalizado por rota",
+    },
+    components: {
+      schemas: {
+        auth: {
+          type: "object",
+          properties: {
+            last: {
+              type: "string",
+              required: true,
+            },
+            name: {
+              type: "string",
+              required: false,
+            },
+            date: {
+              type: "string",
+              required: false,
+            },
+          },
+        },
+        id: {
+          type: "string",
+          properties: {
+            id: {
+              type: "string",
+              required: true,
+            },
+          },
+        },
+      },
+    },
+    paths: {
+      "/{id}": {
+        get: {
+          summary: "authentica o user",
+          consumes: ["application/json"],
+          tags: ["info"],
+          produces: "application/json",
+          parameters: [
+            {
+              in: "path",
+              name: "id",
+              required: true,
+              schema: {
+                $ref: "#/components/schemas/id",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Resposta de sucesso",
+            },
+          },
+        },
+      },
+      "/auth": {
+        post: {
+          summary: "authentica o user",
+          consumes: ["application/json"],
+          tags: ["auth"],
+          produces: "application/json",
+          requestBody: {
+            description: "Created user object",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/auth",
+                },
+              },
+            },
+          },
+          parameters: [
+            {
+              in: "header",
+              name: "id",
+              required: true,
 
-//               schema: {
-//                 $ref: "#/components/schemas/id",
-//               },
-//             },
-
-//           ],
-//           responses: {
-//             200: {
-//               description: "Resposta de sucesso",
-//             },
-//           },
-//         },
-//       },
-//     },
-//   },
-//   apis: [],
-// };
+              schema: {
+                $ref: "#/components/schemas/id",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Resposta de sucesso",
+            },
+          },
+        },
+      },
+    },
+  },
+  apis: [],
+};
 
 class Swagger {
   static initialize(routeConfigs) {
@@ -126,21 +125,30 @@ class Swagger {
       apis: ["../router/**/*.js"],
     };
     const paths = {};
-
+    
     for (let a = 0; a < routeConfigs.length; a++) {
-      if (routeConfigs[a].status) {
+      // if (routeConfigs[a].status) {
         const schemaName = routeConfigs[a].argument;
-        const schema = require(`../router/${routeConfigs[a].name}/${routeConfigs[a].validate}`);
 
-        // Verificar se o schema já existe e, caso não exista, criá-lo
+        const schema = require(`../router/${routeConfigs[a].name}/${routeConfigs[a].validate}`);
+      
+        // console.log('__',Object.keys(schema));÷
         if (!options.swaggerDefinition.components.schemas[schemaName]) {
-          const schemaObject = schema[Object.keys(schema)[0]];
+          const schemaObject = Object.keys(schema);
+
+          for (const element of schemaObject) {
+            // console.log(schema[element]._ids);
+            if(element === 'headers'){
+              console.log(Object.keys(schema[element]))
+
+            }
+          }
+
           const schemaType =
             schemaObject && schemaObject.type === "object"
               ? "object"
               : undefined;
 
-          console.log("|||");
           options.swaggerDefinition.components.schemas[schemaName] = {
             type: schemaType,
             properties: {},
@@ -149,7 +157,7 @@ class Swagger {
           const schemaKeyNames =
             schemaObject && schemaObject.$_terms
               ? schemaObject.$_terms.keys.map((key) => ({
-                  key: key.key,
+                  key: `${key.key}`,
                   type: key.schema.type,
                   required:
                     key.schema._flags.presence === "required" ? true : false,
@@ -157,6 +165,7 @@ class Swagger {
               : [];
 
           for (let p of schemaKeyNames) {
+            console.log("___", schemaKeyNames);
             options.swaggerDefinition.components.schemas[schemaName].properties[
               p.key
             ] = {
@@ -190,11 +199,11 @@ class Swagger {
               // description: routeConfigs[a].description,
               required: true,
             };
-
+            // console.log(routeConfigs[a].path[j])
             if (routeConfigs[a].path[j] === "body") {
               param["application/json"] = {
                 schema: {
-                  $ref: `#/components/schemas${schemaName}`,
+                  $ref: `#/components/schemas/${schemaName}`,
                 },
               };
             }
@@ -233,26 +242,26 @@ class Swagger {
           ...path,
           requestBody,
         };
-      }
+      // }
+
+      const swagger = {
+        ...options.swaggerDefinition,
+        paths,
+      };
+
+      const swaggerOptions = {
+        swaggerDefinition: swagger,
+        apis: [],
+      };
+
+      // console.log(JSON.stringify(swaggerOptions, null, 3));
+
+      const swaggerSpec = swaggerJSDoc(swaggerOptions);
+      router.use("/api-docs", swaggerUi.serve);
+      router.get("/api-docs", swaggerUi.setup(swaggerSpec));
+
+      return router;
     }
-
-    const swagger = {
-      ...options.swaggerDefinition,
-      paths,
-    };
-
-    const swaggerOptions = {
-      swaggerDefinition: swagger,
-      apis: [],
-    };
-
-    console.log(JSON.stringify(swaggerOptions, null, 3));
-
-    const swaggerSpec = swaggerJSDoc(swaggerOptions);
-    router.use("/api-docs", swaggerUi.serve);
-    router.get("/api-docs", swaggerUi.setup(swaggerSpec));
-
-    return router;
   }
 }
 

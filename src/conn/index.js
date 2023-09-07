@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 class Database {
   constructor() {
     this.options = {
-      keepAlive: true,
       connectTimeoutMS: 300000,
       socketTimeoutMS: 300000,
       bufferCommands: true,
@@ -12,7 +11,7 @@ class Database {
       useUnifiedTopology: true,
     };
     this.mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_SOURCE}&authMechanism=SCRAM-SHA-1`;
-  // console.log(this.mongoUrl)
+  console.log(this.mongoUrl)
     this.db = mongoose.createConnection(this.mongoUrl, this.options);
 
     this._setupEventListeners();
@@ -49,10 +48,7 @@ class Database {
     });
   }
 
-  reconnect() {
-    console.log('Attempting to reconnect to MongoDB...');
-    this.db.reconnect();
-  }
+ 
 }
 
 module.exports = new Database();
