@@ -134,28 +134,28 @@ class Swagger {
 
         // Verificar se o schema já existe e, caso não exista, criá-lo
         if (!options.swaggerDefinition.components.schemas[schemaName]) {
+          console.log("|||"  ,schema[Object.keys(schema)[0]]);
           const schemaObject = schema[Object.keys(schema)[0]];
           const schemaType =
             schemaObject && schemaObject.type === "object"
               ? "object"
               : undefined;
 
-          console.log("|||");
-          options.swaggerDefinition.components.schemas[schemaName] = {
-            type: schemaType,
-            properties: {},
-          };
-
-          const schemaKeyNames =
-            schemaObject && schemaObject.$_terms
+              options.swaggerDefinition.components.schemas[schemaName] = {
+                type: schemaType,
+                properties: {},
+              };
+              
+              const schemaKeyNames =
+              schemaObject && schemaObject.$_terms
               ? schemaObject.$_terms.keys.map((key) => ({
-                  key: key.key,
-                  type: key.schema.type,
-                  required:
-                    key.schema._flags.presence === "required" ? true : false,
-                }))
+                key: key.key,
+                type: key.schema.type,
+                required:
+                key.schema._flags.presence === "required" ? true : false,
+              }))
               : [];
-
+              
           for (let p of schemaKeyNames) {
             options.swaggerDefinition.components.schemas[schemaName].properties[
               p.key
