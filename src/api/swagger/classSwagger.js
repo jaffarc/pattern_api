@@ -13,36 +13,36 @@ const pkg = require("../../../package.json");
 //       description:
 //         "Pattern para uma api rest com doc gerado dinamic, com middleware dinamic e personalizado por rota",
 //     },
-//     components: {
-//       schemas: {
-//         auth: {
-//           type: "object",
-//           properties: {
-//             last: {
-//               type: "string",
-//               required: true,
-//             },
-//             name: {
-//               type: "string",
-//               required: false,
-//             },
-//             date: {
-//               type: "string",
-//               required: false,
-//             },
-//           },
-//         },
-//         id: {
+// components: {
+//   schemas: {
+//     auth: {
+//       type: "object",
+//       properties: {
+//         last: {
 //           type: "string",
-//           properties: {
-//             id: {
-//               type: "string",
-//               required: true,
-//             },
-//           },
+//           required: true,
+//         },
+//         name: {
+//           type: "string",
+//           required: false,
+//         },
+//         date: {
+//           type: "string",
+//           required: false,
 //         },
 //       },
 //     },
+//     id: {
+//       type: "string",
+//       properties: {
+//         id: {
+//           type: "string",
+//           required: true,
+//         },
+//       },
+//     },
+//   },
+// },
 //     paths: {
 //       "/{id}": {
 //         get: {
@@ -107,8 +107,10 @@ const pkg = require("../../../package.json");
 //   apis: [],
 // };
 
+
+
 class Swagger {
-  static initialize(routeConfigs) {
+  static initialize(routeConfigs, routeSchemas) {
     const router = Router();
 
     const options = {
@@ -120,88 +122,79 @@ class Swagger {
           description: `${pkg.description}`,
         },
         components: {
-          schemas: {},
+          schemas: routeSchemas, // Use as definições de esquema passadas como parâmetro
         },
       },
       apis: ["../router/**/*.js"],
     };
     const paths = {};
 
+    let parameters = [];
     for (let a = 0; a < routeConfigs.length; a++) {
       if (routeConfigs[a].status) {
         const schemaName = routeConfigs[a].argument;
         const schema = require(`../router/${routeConfigs[a].name}/${routeConfigs[a].validate}`);
 
-        // Verificar se o schema já existe e, caso não exista, criá-lo
-        if (!options.swaggerDefinition.components.schemas[schemaName]) {
-          console.log("|||"  ,schema[Object.keys(schema)[0]]);
-          const schemaObject = schema[Object.keys(schema)[0]];
-          const schemaType =
-            schemaObject && schemaObject.type === "object"
-              ? "object"
-              : undefined;
 
-              options.swaggerDefinition.components.schemas[schemaName] = {
-                type: schemaType,
-                properties: {},
-              };
-              
-              const schemaKeyNames =
-              schemaObject && schemaObject.$_terms
-              ? schemaObject.$_terms.keys.map((key) => ({
-                key: key.key,
-                type: key.schema.type,
-                required:
-                key.schema._flags.presence === "required" ? true : false,
-              }))
-              : [];
-              
-          for (let p of schemaKeyNames) {
-            options.swaggerDefinition.components.schemas[schemaName].properties[
-              p.key
-            ] = {
-              type: p.type,
-              required: p.required,
-            };
-          }
-        }
 
-        let parameters = [];
+        let allKeysFound = false; // Variável de controle
 
-        for (let i = 0; i < routeConfigs[a].path.length; i++) {
-          const pathKey = routeConfigs[a].path[i];
-          const schemaKey = `${pathKey}Schema`;
-          const schemaObject = schema[schemaKey];
+        for (const key in schema) {
+          const keysToFind = Object.keys(schema);
+          const keysFound = new Set();
 
-          const schemaKeyNames =
-            schemaObject && schemaObject.$_terms
-              ? schemaObject.$_terms.keys.map((key) => ({
-                  key: key.key,
-                  type: key.schema.type,
-                  required:
-                    key.schema._flags.presence === "required" ? true : false,
-                }))
-              : [];
-
-          for (let j = 0; j < schemaKeyNames.length; j++) {
-            const param = {
-              in: schemaKeyNames[j].type,
-              name: schemaKeyNames[j].key,
-              // description: routeConfigs[a].description,
-              required: true,
-            };
-
-            if (routeConfigs[a].path[j] === "body") {
-              param["application/json"] = {
-                schema: {
-                  $ref: `#/components/schemas${schemaName}`,
-                },
-              };
+          for (const key of keysToFind) {
+            if (routeConfigs[a].path.includes(key)) {
+              keysFound.add(key);
             }
-
-            parameters.push(param);
           }
+
+          if (keysToFind.every(key => keysFound.has(key))) {
+            // Todas as chaves em schema foram encontradas em routeConfigs[a].path
+            for (const key of keysFound) {
+              for (const Name in schema[key]) {
+                console.log("__", key);
+              }
+            }
+          }
+          // if (routeConfigs[a].path.includes(key)) {
+          //   if (Object.hasOwnProperty.call(schema, key)) {
+          //     for (const Name in schema[key]) {
+          //       console.log("__", key);
+          //     }
+          //   }
+          //   allKeysFound = true; // Marcamos que todas as chaves foram encontradas
+          // }
+
+          // if (allKeysFound) {
+          //   break; // Sai do loop após encontrar todas as chaves
+          // }
         }
+
+
+
+
+
+
+
+
+        // if (schema.headers) {
+        //   for (const headerName in schema.headers) {
+        //     if (Object.hasOwnProperty.call(schema.headers, headerName)) {
+        //       const headerSchema = schema.headers[headerName];
+        //       // console.log("aa",headerSchema)
+        //       parameters.push({
+        //         in: "header",
+        //         name: headerName,
+        //         schema: {
+        //           type: headerSchema._type, // Use o tipo do Joi
+        //           example: headerSchema._examples ? headerSchema._examples[0] : undefined, // Use o primeiro exemplo, se houver
+        //         },
+        //         // required: true, // Defina como necessário, pois você usou .required() no Joi
+        //       });
+        //     }
+        //   }
+        // }
 
         const path = {};
         path[routeConfigs[a].method.toLowerCase()] = {
@@ -222,7 +215,7 @@ class Swagger {
           requestBody.content = {
             "application/json": {
               schema: {
-                $ref: `#/components/schemas${schemaName}`,
+                $ref: `#/components/schemas/${schemaName}`,
               },
             },
           };
@@ -246,7 +239,7 @@ class Swagger {
       apis: [],
     };
 
-    console.log(JSON.stringify(swaggerOptions, null, 3));
+    // console.log(JSON.stringify(swaggerOptions, null, 3));
 
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
     router.use("/api-docs", swaggerUi.serve);
@@ -256,33 +249,9 @@ class Swagger {
   }
 }
 
+
+
 module.exports = Swagger;
 
-// [routeConfigs[a].name]: {
-//   summary: routeConfigs[a].description,
-//   consumes: "application/json",
-//   tags: [routeConfigs[a].name],
-//   parameters: parameters,
-//   responses: {
-//     200: {
-//       description: "Resposta de sucesso",
-//     }
-//   }
-// },
 
-// console.log("aaa", ...new Set(parameters));
-// const arrUnique = [...new Set(parameters)];
-// console.log(parameters);
-// for (let p of schemaKeyNames) {
-//   const parameter = {
-//     name: pathKey,
-//     in: pathKey,
-//     type: p.type,
-//     required: p.required,
-//     explode: true,
-//   };
-// parameters.push(parameter);
-// parameters.push(Object.assign( parameter,        {  schema: {
-//           $ref: `#/components/schemas/${routeConfigs[a].name}`
-//         }}))
-// }
+

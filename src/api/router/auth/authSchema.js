@@ -3,10 +3,10 @@ const joi = require("joi");
 module.exports = {
   headers: {
     objectID: joi
-      .number()
-      .required()
-      .error((errors) => Object.assign(...errors, { message: "ID_INVALIDO" })),
-      'app-auth': joi.string().required()
+      .string()
+      // .required()
+     // .error((errors) => Object.assign(...errors, { message: "ID_INVALIDO" })),
+      // 'app-auth': joi.string().required()
   },
 
   body: joi.object().keys({
