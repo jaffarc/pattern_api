@@ -135,40 +135,48 @@ class Swagger {
         const schemaName = routeConfigs[a].argument;
         const schema = require(`../router/${routeConfigs[a].name}/${routeConfigs[a].validate}`);
 
-
-
-        let allKeysFound = false; // Variável de controle
-
+        const keysFound = new Set();
         for (const key in schema) {
-          const keysToFind = Object.keys(schema);
-          const keysFound = new Set();
 
-          for (const key of keysToFind) {
-            if (routeConfigs[a].path.includes(key)) {
-              keysFound.add(key);
-            }
-          }
+          if (routeConfigs[a].path.includes(key)) {
+            if (Object.hasOwnProperty.call(schema, key)) {
+              for (const Name of Object.keys(schema[key])) {
+                // if (!keysFound.has(key)) {
+                //   keysFound.add(key);
+                
+                  if (Name !== 'type' && schema[key][Name]?.type) {
+                    let name = Name
+                    let type = schema[key][name]?.type;
 
-          if (keysToFind.every(key => keysFound.has(key))) {
-            // Todas as chaves em schema foram encontradas em routeConfigs[a].path
-            for (const key of keysFound) {
-              for (const Name in schema[key]) {
-                console.log("__", key);
+                    console.log( schema[key][name]?.type)
+                    // let type = schema[key]
+                    // console.log(type)
+                    parameters.push({
+                      in: key,
+                      name: name,
+                      schema: {
+                        type, //headerSchema._type, // Use o tipo do Joi
+                        //example: ;;headerSchema._examples ? headerSchema._examples[0] : undefined, // Use o primeiro exemplo, se houver
+                      },
+                      // required: true, // Defina como necessário, pois você usou .required() no Joi
+                    });
+                  }
+
+                  // parameters.push({
+                  //   in: key,
+                  //   name: 'headerName',
+                  //   schema: {
+                  //     type: String, //headerSchema._type, // Use o tipo do Joi
+                  //     //example: ;;headerSchema._examples ? headerSchema._examples[0] : undefined, // Use o primeiro exemplo, se houver
+                  //   },
+                  //   // required: true, // Defina como necessário, pois você usou .required() no Joi
+                  // });
+                  // console.log("__", key);
+                // }
               }
             }
           }
-          // if (routeConfigs[a].path.includes(key)) {
-          //   if (Object.hasOwnProperty.call(schema, key)) {
-          //     for (const Name in schema[key]) {
-          //       console.log("__", key);
-          //     }
-          //   }
-          //   allKeysFound = true; // Marcamos que todas as chaves foram encontradas
-          // }
 
-          // if (allKeysFound) {
-          //   break; // Sai do loop após encontrar todas as chaves
-          // }
         }
 
 

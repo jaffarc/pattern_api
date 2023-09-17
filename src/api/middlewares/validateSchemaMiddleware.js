@@ -1,3 +1,4 @@
+const joi = require('joi')
 function middlewareValidate(property, schema, name) {
   return (req, res, next) => {
     try {
@@ -7,7 +8,8 @@ function middlewareValidate(property, schema, name) {
       let responseSent = false; // variável de controle
       let msgErro;
       for (let i = 0; i < property.length; i++) {
-        let { error } = schemas[`${property[i]}Schema`].validate(
+        console.log(schemas[`${property[i]}Schema`])
+        let { error } = joi.validate(schemas[`${property[i]}Schema`],
           req[property[i]],
           {
             abortEarly: false,

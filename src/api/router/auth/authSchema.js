@@ -2,20 +2,17 @@ const joi = require("joi");
 
 module.exports = {
   headers: {
-    objectID: joi
-      .string()
-      // .required()
-     // .error((errors) => Object.assign(...errors, { message: "ID_INVALIDO" })),
-      // 'app-auth': joi.string().required()
+    objectId: joi.string(),  // .required().error((errors) => Object.assign(...errors, { message: "ID_INVALIDO" })),
+    'app-auth': joi.string().required()
   },
 
   body: joi.object().keys({
     last: joi
       .string()
-      .not("string")
-      .required()
+      // .not("string")
+      // .required()
       .error((errors) => Object.assign(...errors, { message: "LAST_NAME" })),
-    name: joi.string().not("string").required(),
+    // name: joi.string().not("string") .required(),
     date: joi.string().optional(),
   }),
 };
