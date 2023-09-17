@@ -9,7 +9,7 @@ function middlewareValidate(property, schema, name) {
       let responseSent = false; // variável de controle
       let msgErro;
       for (let i = 0; i < property.length; i++) {
-        // console.log( req)
+        console.log(req[property[i]])
         console.log("_", schemas);
         let { error } = schemas.validate(
           req[property[i]],

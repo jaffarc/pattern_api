@@ -33,41 +33,8 @@ const pkg = require("../../../package.json");
 //         },
 //       },
 //     },
-//     id: {
-//       type: "string",
-//       properties: {
-//         id: {
-//           type: "string",
-//           required: true,
-//         },
-//       },
-//     },
 //   },
 // },
-//     paths: {
-//       "/{id}": {
-//         get: {
-//           summary: "authentica o user",
-//           consumes: ["application/json"],
-//           tags: ["info"],
-//           produces: "application/json",
-//           parameters: [
-//             {
-//               in: "path",
-//               name: "id",
-//               required: true,
-//               schema: {
-//                 $ref: "#/components/schemas/id",
-//               },
-//             },
-//           ],
-//           responses: {
-//             200: {
-//               description: "Resposta de sucesso",
-//             },
-//           },
-//         },
-//       },
 //       "/auth": {
 //         post: {
 //           summary: "authentica o user",
@@ -109,7 +76,7 @@ const pkg = require("../../../package.json");
 // };
 
 class Swagger {
-  static initialize(routeConfigs, routeSchemas) {
+  static initialize(routeConfigs) {
     const router = Router();
 
     const options = {
@@ -127,55 +94,33 @@ class Swagger {
           },
         ],
         components: {
-          schemas: routeSchemas, // Use as definições de esquema passadas como parâmetro
+          schemas: {} // Use as definições de esquema passadas como parâmetro
         },
-        
+
       },
       apis: ["../router/**/*.js"],
     };
 
-    
+
     const paths = {};
 
     for (const routeConfig of routeConfigs) {
       if (!routeConfig.status) continue;
-    
+
       const schemaName = routeConfig.argument;
       const schema = require(`../router/${routeConfig.name}/${routeConfig.validate}`);
-      
+
       const addedNames = new Set(); // Usado para rastrear nomes já adicionados
       const parameters = [];
-    
-      for (const key in schema) {
-        if (routeConfig.path.includes(key) && schema.hasOwnProperty(key)) {
-          for (const Name in schema[key]) {
-            if (!schema[key][Name]?.type) {
-              schema[key].$_terms.keys.forEach((v) => {
-                const type = typeIN[key];
-                const name = v.key;
-    
-                if (!addedNames.has(name)) {
-                  addedNames.add(name);
-                  parameters.push({
-                    in: type,
-                    name: name,
-                    content: {
-                      schema: {},
-                    },
-                  });
-                }
-              });
-            }
-          }
-        }
-      }
-    
+
+
       const path = {
         [routeConfig.method.toLowerCase()]: {
           summary: routeConfig.description,
           consumes: ["application/json"],
           tags: [routeConfig.name],
           produces: "application/json",
+          // requestBody,
           parameters,
           responses: {
             200: {
@@ -184,95 +129,89 @@ class Swagger {
           },
         },
       };
-    
-      const requestBody = {};
-      if (routeConfig.type && routeConfig.type.includes("body")) {
-        requestBody.content = {
-          "application/json": {
-            schema: {
-              $ref: `#/components/schemas/${schemaName}`,
-            },
-          },
-        };
+
+      if (!options.swaggerDefinition.components?.schemas[schemaName]) {
+        const schemaObject = Object.keys(schema);
+
+        for (const key in schema) {
+          for (const Name in schema[key]) {
+            if (!schema[key][Name]?.type) {
+              const schemaType =
+                schemaObject && schemaObject.type === "object"
+                  ? "object"
+                  : undefined;
+
+              options.swaggerDefinition.components.schemas[schemaName] = {
+                type: schemaType,
+                properties: {},
+              };
+
+              if (!addedNames.has(schema[key].$_terms.keys)) {
+                addedNames.add(schema[key].$_terms.keys);
+                const schemaKeyNames = schema[key].$_terms.keys.map((v) => ({
+                  key: `${v.key}`,
+                  type: v.schema.type,
+                  required:
+                    v.schema._flags.presence === "required" ? true : false,
+                }));
+
+                console.log(key, schemaKeyNames)
+              }
+            }
+          }
+        }
       }
-    
+
+
+
       paths[routeConfig.argument] = {
         ...(paths[routeConfig.argument] || {}),
         ...path,
-        requestBody,
+        // requestBody,
       };
     }
-    
-    // let parameters = [];
-    // for (let a = 0; a < routeConfigs.length; a++) {
-    //   if (routeConfigs[a].status) {
-    //     const schemaName = routeConfigs[a].argument;
-    //     const schema = require(`../router/${routeConfigs[a].name}/${routeConfigs[a].validate}`);
-        
-    //     const addedNames = new Set(); // Usado para rastrear nomes já adicionados
 
-    //     for (const key in schema) {
-    //       if (routeConfigs[a].path.includes(key) && schema.hasOwnProperty(key)) {
-    //         const schemaKeys = Object.keys(schema[key]);
-        
-    //         for (const Name of schemaKeys) {
-    //           if (!schema[key][Name]?.type) {
-    //             console.log(key);
-        
-    //             schema[key].$_terms.keys.forEach((v) => {
-    //               const type = typeIN[key];
-    //               const name = v.key;
 
-    //               if (!addedNames.has(name)) {
-    //                 addedNames.add(name);
-    //                 parameters.push({
-    //                   in: type,
-    //                   name: name,
-    //                   content: {
-    //                     schema: {},
+
+
+
+
+    // for (const key in schema) {
+    //   if (routeConfig.path.includes(key) && schema.hasOwnProperty(key)) {
+    //     for (const Name in schema[key]) {
+    //       if (!schema[key][Name]?.type) {
+    //         schema[key].$_terms.keys.forEach((v) => {
+    //           const type = typeIN[key];
+    //           const name = v.key;
+
+    //           if (!addedNames.has(name)) {
+    //             addedNames.add(name);
+    //             const param = {
+    //               in: typeIN[key],
+    //               name: v.key,
+    //               description: routeConfig.description,
+    //               required: true,
+    //             };
+    //             console.log(param)
+    //             parameters.push({
+    //               in: type,
+    //               name: name,
+    //               content: {
+    //                 "application/json": {
+    //                   schema: {
+    //                     // $ref: `#/components/schemas${schemaName}`,
     //                   },
-    //                 });
-    //               }
+    //                 }
+    //               },
+
     //             });
     //           }
-    //         }
+    //         });
     //       }
     //     }
-
-
-
-    //     const path = {};
-    //     path[routeConfigs[a].method.toLowerCase()] = {
-    //       summary: routeConfigs[a].description,
-    //       consumes: ["application/json"],
-    //       tags: [routeConfigs[a].name],
-    //       produces: "application/json",
-    //       parameters,
-    //       responses: {
-    //         200: {
-    //           description: "Resposta de sucesso",
-    //         },
-    //       },
-    //     };
-
-    //     const requestBody = {};
-    //     if (routeConfigs[a].type && routeConfigs[a].type.includes("body")) {
-    //       requestBody.content = {
-    //         "application/json": {
-    //           schema: {
-    //             $ref: `#/components/schemas/${schemaName}`,
-    //           },
-    //         },
-    //       };
-    //     }
-
-    //     paths[routeConfigs[a].argument] = {
-    //       ...paths[routeConfigs[a].argument],
-    //       ...path,
-    //       requestBody,
-    //     };
     //   }
     // }
+
 
     const swagger = {
       ...options.swaggerDefinition,
