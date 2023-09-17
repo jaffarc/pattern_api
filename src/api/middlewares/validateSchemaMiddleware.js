@@ -5,11 +5,13 @@ function middlewareValidate(property, schema, name) {
       // code block to be executed
 
       let schemas = require(`../router/${name}/${schema}`);
+
       let responseSent = false; // variável de controle
       let msgErro;
       for (let i = 0; i < property.length; i++) {
-        console.log(schemas[`${property[i]}Schema`])
-        let { error } = joi.validate(schemas[`${property[i]}Schema`],
+        // console.log( req)
+        // console.log(schemas[`${property[i]}Schema`])
+        let { error } = schemas.validate(
           req[property[i]],
           {
             abortEarly: false,

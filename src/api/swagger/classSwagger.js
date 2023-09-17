@@ -107,6 +107,13 @@ const pkg = require("../../../package.json");
 //   apis: [],
 // };
 
+const TYPE = Object.freeze({
+  headers: "header",
+  header: "header",
+  body: "body",
+  path: "path",
+  param: "path"
+})
 
 
 class Swagger {
@@ -120,7 +127,14 @@ class Swagger {
           title: `${pkg.name}`,
           version: `${pkg.version}`,
           description: `${pkg.description}`,
+
         },
+        servers: [
+          {
+            url: 'http://localhost:3080/',
+            description: 'Local Server',
+          },
+        ],
         components: {
           schemas: routeSchemas, // Use as definições de esquema passadas como parâmetro
         },
@@ -135,43 +149,39 @@ class Swagger {
         const schemaName = routeConfigs[a].argument;
         const schema = require(`../router/${routeConfigs[a].name}/${routeConfigs[a].validate}`);
 
-        const keysFound = new Set();
+
         for (const key in schema) {
 
           if (routeConfigs[a].path.includes(key)) {
             if (Object.hasOwnProperty.call(schema, key)) {
               for (const Name of Object.keys(schema[key])) {
-                // if (!keysFound.has(key)) {
-                //   keysFound.add(key);
-                
-                  if (Name !== 'type' && schema[key][Name]?.type) {
-                    let name = Name
-                    let type = schema[key][name]?.type;
+                if (Name !== 'type' && schema[key][Name]?.type) {
+                  let name = Name
+                  let type = TYPE[key];
 
-                    console.log( schema[key][name]?.type)
-                    // let type = schema[key]
-                    // console.log(type)
-                    parameters.push({
-                      in: key,
-                      name: name,
-                      schema: {
-                        type, //headerSchema._type, // Use o tipo do Joi
-                        //example: ;;headerSchema._examples ? headerSchema._examples[0] : undefined, // Use o primeiro exemplo, se houver
-                      },
-                      // required: true, // Defina como necessário, pois você usou .required() no Joi
-                    });
-                  }
+                  console.log("dsafa", TYPE[key])
+                  // let type = schema[key]
+                  // console.log(type)
+                  parameters.push({
+                    in: TYPE[key],
+                    name: name,
+                    schema: {
+                      type, //headerSchema._type, // Use o tipo do Joi
+                      //example: ;;headerSchema._examples ? headerSchema._examples[0] : undefined, // Use o primeiro exemplo, se houver
+                    },
+                  });
+                }
 
-                  // parameters.push({
-                  //   in: key,
-                  //   name: 'headerName',
-                  //   schema: {
-                  //     type: String, //headerSchema._type, // Use o tipo do Joi
-                  //     //example: ;;headerSchema._examples ? headerSchema._examples[0] : undefined, // Use o primeiro exemplo, se houver
-                  //   },
-                  //   // required: true, // Defina como necessário, pois você usou .required() no Joi
-                  // });
-                  // console.log("__", key);
+                // parameters.push({
+                //   in: key,
+                //   name: 'headerName',
+                //   schema: {
+                //     type: String, //headerSchema._type, // Use o tipo do Joi
+                //     //example: ;;headerSchema._examples ? headerSchema._examples[0] : undefined, // Use o primeiro exemplo, se houver
+                //   },
+                //   // required: true, // Defina como necessário, pois você usou .required() no Joi
+                // });
+                // console.log("__", key);
                 // }
               }
             }
