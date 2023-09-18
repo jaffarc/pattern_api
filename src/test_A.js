@@ -5,7 +5,7 @@ const schema= {
   email: Joi.string().min(6).email(),
   // password: Joi.string().min(6).required()
 }
-const validation = Joi.object().keys(schema).validate({name:'jaffar'});
+const validation = schema.validate({name:'jaffar'});
 console.log(validation )
 
   if(validation.error){

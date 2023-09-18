@@ -6,5 +6,6 @@
 	"date is not allowed to be empty": "date is not allowed to be empty",
 	"name must be [ref:global:value]": "name must be [ref:global:value]",
 	"name must be [ref:string]": "name must be [ref:string]",
-	"name contains an invalid value": "name contains an invalid value"
+	"name contains an invalid value": "name contains an invalid value",
+	"objectId is required": "objectId is required"
 }

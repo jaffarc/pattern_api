@@ -2,5 +2,6 @@
 	"ERRO_OBJECT_ID": "O VALOR INFORMADO NÃO UM OBJECTID",
 	"LAST_NAME": "SOBRE NOME OBRIGATORIO",
 	"ID_INVALIDO": "ID É OBRIGATORIO",
-	"ROLE_MSG_UNAUTHORIZED": "O usuario não tem permissao para essa rota"
+	"ROLE_MSG_UNAUTHORIZED": "O usuario não tem permissao para essa rota",
+	"objectId is required": "objectId is required"
 }

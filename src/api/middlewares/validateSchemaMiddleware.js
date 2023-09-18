@@ -1,3 +1,4 @@
+const joi = require("joi");
 const { typeIN } = require("../../utils/helper");
 function middlewareValidate(property, schema, name) {
   return (req, res, next) => {
@@ -5,13 +6,11 @@ function middlewareValidate(property, schema, name) {
       // code block to be executed
 
       let schemas = require(`../router/${name}/${schema}`);
-      // console.log("aaaa", `../router/${name}/${schema}`);
+      // console.log("aaaa", schemas);
       let responseSent = false; // variável de controle
       let msgErro;
       for (let i = 0; i < property.length; i++) {
-        console.log(req[property[i]])
-        console.log("_", schemas);
-        let { error } = schemas.validate(
+        let { error } = schemas[property[i]].validate(
           req[property[i]],
           {
             abortEarly: false,
