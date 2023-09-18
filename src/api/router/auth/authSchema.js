@@ -10,9 +10,9 @@ module.exports = {
     last: joi
       .string()
       // .not("string")
-      // .required()
+      .required()
       .error((errors) => Object.assign(...errors, { message: "LAST_NAME" })),
-    // name: joi.string().not("string") .required(),
+    name: joi.string().not("string").required(),
     date: joi.string().optional(),
   }),
 };
