@@ -119,7 +119,7 @@ class Swagger {
       const schema = require(`../router/${routeConfig.name}/${routeConfig.validate}`);
 
       const addedNames = new Set(); // Usado para rastrear nomes já adicionados
-      let requestBody = {};
+      let requestBody = [];
 
       if (!options.swaggerDefinition.components?.schemas[schemaName]) {
         const schemaObject = Object.keys(schema);
@@ -152,7 +152,7 @@ class Swagger {
                   type: "object",
                 };
                 if (key === "body") {
-                  requestBody = {
+                  requestBody.push( {
                     description: "Created user object",
                     content: {
                       "application/json": {
@@ -161,7 +161,7 @@ class Swagger {
                         },
                       },
                     },
-                  };
+                  });
                 }
                 if (key === "headers") {
                   parameters.push(
