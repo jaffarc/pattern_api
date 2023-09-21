@@ -3,7 +3,7 @@ const joi = require("joi");
 module.exports = {
   headers: joi.object().keys({
     objectId: joi.string().required(),  // .required().error((errors) => Object.assign(...errors, { message: "ID_INVALIDO" })),
-    'app-auth': joi.string().required()
+    // 'app-auth': joi.string().required()
   }),
 
   body: joi.object().keys({

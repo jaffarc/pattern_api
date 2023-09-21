@@ -84,6 +84,10 @@ const test = {
   apis: [],
 };
 
+function addElement (ElementList, element) {
+  let newList = Object.assign(ElementList, element)
+  return newList
+}
 class Swagger {
   static initialize(routeConfigs) {
     const router = Router();
@@ -110,16 +114,16 @@ class Swagger {
     };
 
     const paths = {};
-    let parameters = [];
+    let parameters ;
 
     for (const routeConfig of routeConfigs) {
       if (!routeConfig.status) continue;
 
       const schemaName = routeConfig.argument;
       const schema = require(`../router/${routeConfig.name}/${routeConfig.validate}`);
-
+// console.log(routeConfig)
       const addedNames = new Set(); // Usado para rastrear nomes já adicionados
-      let requestBody = [];
+      let requestBody = {};
 
       if (!options.swaggerDefinition.components?.schemas[schemaName]) {
         const schemaObject = Object.keys(schema);
@@ -133,10 +137,10 @@ class Swagger {
                   key: `${v.key}`,
                   type: v.schema.type,
                   required:
-                    v.schema._flags.presence === "required" ? true : false,
+                    v.schema._flags.presence === "required" ? true : false
                 }));
 
-                console.log(key, schemaKeyNames);
+                // console.log(key, schemaKeyNames);
                 // const schemaProperties = {};
                 let n = schemaName.replace("/", "");
                 options.swaggerDefinition.components.schemas[n] = {
@@ -152,7 +156,7 @@ class Swagger {
                   type: "object",
                 };
                 if (key === "body") {
-                  requestBody.push( {
+                  addElement(requestBody,{
                     description: "Created user object",
                     content: {
                       "application/json": {
@@ -161,23 +165,35 @@ class Swagger {
                         },
                       },
                     },
-                  });
+                  } )
+                  
                 }
                 if (key === "headers") {
-                  parameters.push(
-                    {
-                      in: "header",
-                      name: "id",
-                      required: true,
+                  console.log('KKK',schema[key].$_terms.keys)
+                  parameters= schema[key].$_terms.keys.map(v=>{
+                    console.log(v.schema.$_terms)
+                    return {
+                      in: key,
+                      name: v.key,
+                      type:v.schema.type
+                    }
+
+                  },{})
+                  
+console.log('parameters', parameters)
+                  //  parameters.push[ {
+                  //     in: "header",
+                  //     name: "id",
+                  //     required: true,
         
-                      schema: {
-                        $ref: "#/components/schemas/id",
-                      },
-                    },
-                  )
+                  //     schema: {
+                  //       $ref: "#/components/schemas/id",
+                  //     },
+                  //   }]
+                  
                 }
 
-                console.log(options.swaggerDefinition.components.schemas);
+                // console.log(options.swaggerDefinition.components.schemas);
               }
             }
           }
@@ -216,7 +232,7 @@ class Swagger {
       apis: [],
     };
 
-    console.log(JSON.stringify(swaggerOptions, null, 3));
+    // console.log(JSON.stringify(swaggerOptions, null, 3));
 
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
     router.use("/api-docs", swaggerUi.serve);
