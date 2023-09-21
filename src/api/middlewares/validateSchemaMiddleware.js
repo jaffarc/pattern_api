@@ -10,6 +10,8 @@ function middlewareValidate(property, schema, name) {
       let responseSent = false; // variável de controle
       let msgErro;
       for (let i = 0; i < property.length; i++) {
+
+        console.log(req[property[i]])
         let { error } = schemas[property[i]].validate(
           req[property[i]],
           {

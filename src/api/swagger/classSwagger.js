@@ -84,9 +84,9 @@ const test = {
   apis: [],
 };
 
-function addElement (ElementList, element) {
-  let newList = Object.assign(ElementList, element)
-  return newList
+function addElement(ElementList, element) {
+  let newList = Object.assign(ElementList, element);
+  return newList;
 }
 class Swagger {
   static initialize(routeConfigs) {
@@ -114,14 +114,14 @@ class Swagger {
     };
 
     const paths = {};
-    let parameters ;
+    let parameters;
 
     for (const routeConfig of routeConfigs) {
       if (!routeConfig.status) continue;
 
       const schemaName = routeConfig.argument;
       const schema = require(`../router/${routeConfig.name}/${routeConfig.validate}`);
-// console.log(routeConfig)
+      // console.log(routeConfig)
       const addedNames = new Set(); // Usado para rastrear nomes já adicionados
       let requestBody = {};
 
@@ -137,13 +137,12 @@ class Swagger {
                   key: `${v.key}`,
                   type: v.schema.type,
                   required:
-                    v.schema._flags.presence === "required" ? true : false
+                    v.schema._flags.presence === "required" ? true : false,
                 }));
 
-                // console.log(key, schemaKeyNames);
-                // const schemaProperties = {};
                 let n = schemaName.replace("/", "");
                 options.swaggerDefinition.components.schemas[n] = {
+                  type: "object",
                   properties: Object.fromEntries(
                     schemaKeyNames.map((p) => [
                       p.key,
@@ -156,7 +155,7 @@ class Swagger {
                   type: "object",
                 };
                 if (key === "body") {
-                  addElement(requestBody,{
+                  addElement(requestBody, {
                     description: "Created user object",
                     content: {
                       "application/json": {
@@ -165,32 +164,20 @@ class Swagger {
                         },
                       },
                     },
-                  } )
-                  
+                  });
                 }
                 if (key === "headers") {
-                  console.log('KKK',schema[key].$_terms.keys)
-                  parameters= schema[key].$_terms.keys.map(v=>{
-                    console.log(v.schema.$_terms)
+                  parameters = schema[key].$_terms.keys.map((v) => {
+                    // console.log("aaaaa", v.schema);
                     return {
-                      in: key,
+                      in: 'header',
                       name: v.key,
-                      type:v.schema.type
-                    }
-
-                  },{})
-                  
-console.log('parameters', parameters)
-                  //  parameters.push[ {
-                  //     in: "header",
-                  //     name: "id",
-                  //     required: true,
-        
-                  //     schema: {
-                  //       $ref: "#/components/schemas/id",
-                  //     },
-                  //   }]
-                  
+                      type: v.schema.type.toLowerCase(),
+                      description: v.schema._flags?.description || "",
+                      required:
+                        v.schema._flags?.presence === "required" ? true : false,
+                    };
+                  }, {});
                 }
 
                 // console.log(options.swaggerDefinition.components.schemas);
@@ -232,7 +219,7 @@ console.log('parameters', parameters)
       apis: [],
     };
 
-    // console.log(JSON.stringify(swaggerOptions, null, 3));
+    console.log(JSON.stringify(swaggerOptions, null, 3));
 
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
     router.use("/api-docs", swaggerUi.serve);
