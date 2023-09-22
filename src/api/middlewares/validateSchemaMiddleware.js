@@ -1,28 +1,30 @@
 function middlewareValidate(property, schema, name) {
-  return (req, res, next) => {
+  let responseSent = false;
+  return async (req, res, next) => {
     try {
-      // code block to be executed
-
+      const _validationOptions = {
+        abortEarly: false,
+        allowUnknown: true,
+        stripUnknown: true,
+        convert: true,
+      };
       let schemas = require(`../router/${name}/${schema}`);
-      let responseSent = false; // variável de controle
-      let msgErro;
+
       for (let i = 0; i < property.length; i++) {
-        let { error } = schemas[`${property[i]}Schema`].validate(
-          req[property[i]],
-          {
-            abortEarly: false,
-            allowUnknown: true,
-            stripUnknown: true,
-          }
-        );
-        // console.log("Error", property.length);
-        if (error) {
-          const { details } = error;
-          const message = details.map((i) => i.message)[0];
-          msgErro = message.replace(/(?:[\'"])/g, "");
-          if (property.length >= i) {
-            responseSent = true; // resposta enviada
-            break;
+        if (schemas[property[i]] && req[property[i]]) {
+          let { error } = await schemas[property[i]].validateAsync(
+            req[property[i]],
+            _validationOptions
+          );
+
+          if (error) {
+            const { details } = error;
+            const message = details.map((i) => i.message)[0];
+            msgErro = message.replace(/(?:[\'"])/g, "");
+            if (property.length >= i) {
+              responseSent = true; // resposta enviada
+              break;
+            }
           }
         }
       }

@@ -66,6 +66,6 @@ app.use((err, req, res, next) => {
 
 
 
-app.use(require("./api/router/registerRouter"));
+app.use(require("./api/router/Router"));
 
 module.exports = app;

@@ -87,21 +87,49 @@ const setupServer = (isCluster) => {
 
   if (CLUSTER && cluster.isMaster) {
     process.on('SIGUSR2', async () => {
-      const workers = Object.values(cluster.workers)
+      const workers = Object.values(cluster.workers);
+      const restartPromises = [];
+    
       for (const worker of workers) {
-        console.log(`Stopping worker: ${worker.process.pid}`)
-        worker.disconnect()
-        await once(worker, 'exit')
-        if (!worker.exitedAfterDisconnect) continue
-        const newWorker = cluster.fork()
-        await once(newWorker, 'listening')
+        console.log(`Stopping worker: ${worker.process.pid}`);
+        const restartPromise = new Promise((resolve) => {
+          worker.disconnect();
+          worker.on('exit', () => {
+            if (!worker.exitedAfterDisconnect) return;
+            const newWorker = cluster.fork();
+            newWorker.once('listening', resolve);
+          });
+        });
+    
+        restartPromises.push(restartPromise);
       }
-    })
-    // Signal 1: Start new worker before killing old worker
+    
+      await Promise.all(restartPromises);
+    });
+    
+    process.on('SIGINT', () => {
+      console.log('Received SIGINT signal. Closing the process...');
+      const workers = Object.values(cluster.workers);
+    
+      for (const worker of workers) {
+        console.log(`Stopping worker: ${worker.process.pid}`);
+        worker.disconnect();
+      }
+    
+      // Exit the process after a short delay to allow workers to gracefully terminate
+
+    });
+    
+
+
     process.on('SIGUSR1', () => {
-      console.log('Starting new worker')
-      cluster.fork()
-    })
+      console.log('Starting new worker');
+      const newWorker = cluster.fork();
+      newWorker.once('listening', () => {
+        console.log(`New worker started: ${newWorker.process.pid}`);
+      });
+    });
+    
   
     console.log(`Master cluster setting up ${workers.length} workers`)
   }

@@ -12,7 +12,7 @@ class RouteLoader {
       }
       if (
         /((?:([R-r]outer)))/g.test(file.name) &&
-        file.name !== path.basename(__filename) && file.name !== 'registerRouter.js'
+        file.name !== path.basename(__filename) && file.name !== 'Router.js'
       ) {
         yield `${dir}/${file.name}`;
       }

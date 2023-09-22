@@ -16,6 +16,7 @@ const RouteLoader = require('./createSwagger');
 
 const routeConfigs = RouteLoader.loadRoutes();
 
+// console.log(routeConfigs)
 
 // console.log(routeConfigs)
 const swaggerRouter = Swagger.initialize(routeConfigs);
@@ -84,7 +85,7 @@ router.use((req, res, next) => {
     /\.[0-9a-zA-Z]+$/i.test(req.originalUrl) ||
     /(\.[0-9a-z-A-Z]*)/im.test(req.originalUrl)
   ) {
-    res.status(401).jsonp({
+    res.status(401).json({
       code: "unauthorized",
       message: "Unauthorized referral access",
     });
