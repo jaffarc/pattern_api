@@ -5,84 +5,84 @@ const { typeIN } = require("../../utils/helper");
 const joi = require("joi");
 const pkg = require("../../../package.json");
 
-const test = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "pattern_api",
-      version: "1.0.0",
-      description:
-        "Pattern para uma api rest com doc gerado dinamic, com middleware dinamic e personalizado por rota",
-    },
-    components: {
-      schemas: {
-        auth: {
-          type: "object",
-          properties: {
-            last: {
-              type: "string",
-              required: true,
-            },
-            name: {
-              type: "string",
-              required: false,
-            },
-            date: {
-              type: "string",
-              required: false,
-            },
-          },
-        },
-        id: {
-          type: "string",
-          properties: {
-            id: {
-              type: "string",
-              required: true,
-            },
-          },
-        },
-      },
-    },
-    paths: {
-      "/auth": {
-        post: {
-          summary: "authentica o user",
-          consumes: ["application/json"],
-          tags: ["auth"],
-          produces: "application/json",
-          requestBody: {
-            description: "Created user object",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/auth",
-                },
-              },
-            },
-          },
-          parameters: [
-            {
-              in: "header",
-              name: "id",
-              required: true,
+// const test = {
+//   swaggerDefinition: {
+//     openapi: "3.0.0",
+//     info: {
+//       title: "pattern_api",
+//       version: "1.0.0",
+//       description:
+//         "Pattern para uma api rest com doc gerado dinamic, com middleware dinamic e personalizado por rota",
+//     },
+//     components: {
+//       schemas: {
+//         auth: {
+//           type: "object",
+//           properties: {
+//             last: {
+//               type: "string",
+//               required: true,
+//             },
+//             name: {
+//               type: "string",
+//               required: false,
+//             },
+//             date: {
+//               type: "string",
+//               required: false,
+//             },
+//           },
+//         },
+//         id: {
+//           type: "string",
+//           properties: {
+//             id: {
+//               type: "string",
+//               required: true,
+//             },
+//           },
+//         },
+//       },
+//     },
+//     paths: {
+//       "/auth": {
+//         post: {
+//           summary: "authentica o user",
+//           consumes: ["application/json"],
+//           tags: ["auth"],
+//           produces: "application/json",
+//           requestBody: {
+//             description: "Created user object",
+//             content: {
+//               "application/json": {
+//                 schema: {
+//                   $ref: "#/components/schemas/auth",
+//                 },
+//               },
+//             },
+//           },
+//           parameters: [
+//             {
+//               in: "header",
+//               name: "id",
+//               required: true,
 
-              schema: {
-                $ref: "#/components/schemas/id",
-              },
-            },
-          ],
-          responses: {
-            200: {
-              description: "Resposta de sucesso",
-            },
-          },
-        },
-      },
-    },
-  },
-  apis: [],
-};
+//               schema: {
+//                 $ref: "#/components/schemas/id",
+//               },
+//             },
+//           ],
+//           responses: {
+//             200: {
+//               description: "Resposta de sucesso",
+//             },
+//           },
+//         },
+//       },
+//     },
+//   },
+//   apis: [],
+// };
 
 function addElement(ElementList, element) {
   let newList = Object.assign(ElementList, element);
@@ -219,7 +219,7 @@ class Swagger {
       apis: [],
     };
 
-    console.log(JSON.stringify(swaggerOptions, null, 3));
+    // console.log(JSON.stringify(swaggerOptions, null, 3));
 
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
     router.use("/api-docs", swaggerUi.serve);

@@ -12,7 +12,7 @@
 */
 const authService = async ({body}) => {
     try {
-        console.log('AAAAA', body);
+        // console.log('AAAAA', body);
         return {
             date: new Date(),
             token: 'fdsafaskfjksajasjlljf'

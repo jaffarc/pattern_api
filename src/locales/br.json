@@ -3,5 +3,12 @@
 	"LAST_NAME": "SOBRE NOME OBRIGATORIO",
 	"ID_INVALIDO": "ID É OBRIGATORIO",
 	"ROLE_MSG_UNAUTHORIZED": "O usuario não tem permissao para essa rota",
-	"objectId is required": "objectId is required"
+	"objectId is required": "objectId is required",
+	"host is not allowed": "host is not allowed",
+	"content-length is not allowed": "content-length is not allowed",
+	"user-agent is not allowed": "user-agent is not allowed",
+	"accept-encoding is not allowed": "accept-encoding is not allowed",
+	"key is required": "key is required",
+	"macaco is required": "macaco is required",
+	"valor is required": "valor is required"
 }

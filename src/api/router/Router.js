@@ -16,7 +16,7 @@ const RouteLoader = require('./createSwagger');
 
 const routeConfigs = RouteLoader.loadRoutes();
 
-console.log(routeConfigs)
+// console.log(routeConfigs)
 
 // console.log(routeConfigs)
 const swaggerRouter = Swagger.initialize(routeConfigs);
