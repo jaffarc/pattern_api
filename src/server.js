@@ -5,16 +5,14 @@ const cors = require("cors");
 const morgan = require("morgan");
 const express = require("express");
 const { json, urlencoded } = require("body-parser");
-  
+
 
 // const swaggerUi = require("swagger-ui-express");
 require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 });
 
-
 // const { buscarDados } = require("analiticlog");
-
 
 const app = express();
 i18n.configure({
@@ -32,20 +30,24 @@ app.use(
   json({ limit: "500kb" }),
   urlencoded({ extended: true }),
 );
+const { validateType } = require('../src/api/middlewares/validateType')
+app.use(validateType);
+
 // app.use(buscarDados);
 
 // console.log(accessLogStream.token('combined'));
 app.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATH");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   res.header(
     "Access-Control-Allow-Headers",
     "Content-type, Accept, Authorization"
   );
-
   next();
 });
+
+
 
 /**
  * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado

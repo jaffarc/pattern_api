@@ -11,7 +11,7 @@ class Database {
       useUnifiedTopology: true,
     };
     this.mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_SOURCE}&authMechanism=SCRAM-SHA-1`;
-  console.log(this.mongoUrl)
+  // console.log(this.mongoUrl)
     this.db = mongoose.createConnection(this.mongoUrl, this.options);
 
     this._setupEventListeners();

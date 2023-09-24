@@ -24,6 +24,7 @@ const dinamicMiddleware = (handlers, params) => {
           return next();
         }
         const handler = middleware[handlers[index]][handlers[index]];
+
         handler(params ? params[handlers[index]] : "")(
           req,
           res,

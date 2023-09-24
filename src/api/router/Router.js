@@ -1,13 +1,9 @@
 
 const { Router } = require("express");
-const {
-  middlewareValidate,
-} = require("../middlewares/validateSchemaMiddleware");
-const { middlewareController } = require("../middlewares/controllerMiddleware");
 const { dinamicMiddleware } = require("../middlewares/dinamicMiddleware");
-const {
-  capturelogMiddleware,
-} = require("../customMiddleware/capturelogMiddleware");
+const { middlewareValidate } = require("../middlewares/validateSchemaMiddleware");
+const { middlewareController } = require("../middlewares/controllerMiddleware");
+const { capturelogMiddleware } = require("../customMiddleware/capturelogMiddleware");
 
 const router = Router();
 
@@ -15,10 +11,6 @@ const Swagger = require("../swagger/classSwagger");
 const RouteLoader = require('./createSwagger');
 
 const routeConfigs = RouteLoader.loadRoutes();
-
-// console.log(routeConfigs)
-
-// console.log(routeConfigs)
 const swaggerRouter = Swagger.initialize(routeConfigs);
 
 router.use(swaggerRouter);
@@ -60,14 +52,14 @@ for (const filePath of routeConfigs) {
         middlewareController(name, service)
       );
     }
+    console.log(argument)
   } catch (error) {
     throw { message: error };
   }
 }
 
-//  router[ ];
 
-const ErrorHandler = (err, req, res, next) => {
+const ErrorHandler = (err, _req, res, _next) => {
   const errStatus = err.statusCode || 422;
   const errMsg = err.message || "Something went wrong";
   res.status(errStatus).json({

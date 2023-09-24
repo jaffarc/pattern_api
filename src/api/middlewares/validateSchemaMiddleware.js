@@ -1,3 +1,4 @@
+const { typeIN } = require('../../utils/helper')
 function middlewareValidate(property, schema, name) {
   let responseSent = false;
   return async (req, res, next) => {
@@ -11,8 +12,14 @@ function middlewareValidate(property, schema, name) {
       let schemas = require(`../router/${name}/${schema}`);
 
       for (let i = 0; i < property.length; i++) {
+        let vt = typeIN[property[i]];
+
+        console.log(vt)
         if (schemas[property[i]] && req[property[i]]) {
-          let { error } = await schemas[property[i]].validateAsync(
+
+          console.log('++++', property[i], schemas[vt], req[vt])
+
+          let { error } = await schemas[property[i]].validate(
             req[property[i]],
             _validationOptions
           );

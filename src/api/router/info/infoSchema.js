@@ -10,7 +10,7 @@ module.exports = {
         Object.assign(...errors, { message: "ERRO_OBJECT_ID" })
       ),
   }),
-  // query: joi.object().keys({
-  //   name: joi.string().required(),
-  // }),
+  path: { 
+    id: joi.number().min(1).required() 
+   } 
 };

@@ -9,6 +9,7 @@ const middlewareController = (path, serverName) => {
       params: req.params    // Passa o req.params como reqParams
     };
 
+
     service[serverName](serviceParams) // Chama o serviço com os parâmetros
       .then((result) => {
         return resJsonP(res, 200, true, result);

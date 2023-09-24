@@ -148,7 +148,7 @@ class Swagger {
                       p.key,
                       {
                         type: p.type,
-                        required: p.required,
+                        required: p.required
                       },
                     ])
                   ),
@@ -176,6 +176,7 @@ class Swagger {
                       description: v.schema._flags?.description || "",
                       required:
                         v.schema._flags?.presence === "required" ? true : false,
+                      readOnly: true
                     };
                   }, {});
                 }

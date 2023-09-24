@@ -1,11 +1,11 @@
 module.exports = [
   {
-    method: "put",
-    argument: "/id",
+    method: "get",
+    argument: "/:id",
     description: "information api status",
     name: "info",
     validate: "infoSchema",
-    path: ["headers", "query"],
+    path: ['param'],
     service: "infoService",
     handlers: [],
     getLog: false, /** captura o log completo entrada e saida da rota */
