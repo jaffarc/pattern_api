@@ -166,11 +166,11 @@ class Swagger {
                     },
                   });
                 }
-                if (key === "headers") {
+                if (key !== "body") {
                   parameters = schema[key].$_terms.keys.map((v) => {
-                    // console.log("aaaaa", v.schema);
+                    // console.log("aaaaa", key);
                     return {
-                      in: 'header',
+                      in: typeIN[key],
                       name: v.key,
                       type: v.schema.type.toLowerCase(),
                       description: v.schema._flags?.description || "",

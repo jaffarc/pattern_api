@@ -6,7 +6,9 @@ const typeIN = Object.freeze({
     header: "header",
     body: "body",
     path: "path",
-    param: "path"
+    param: "path",
+    query:'query'
+
   })
 
 module.exports = {

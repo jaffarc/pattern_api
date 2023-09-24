@@ -16,7 +16,7 @@ function middlewareValidate(property, schema, name) {
             req[property[i]],
             _validationOptions
           );
-
+          console.log("EROO", error);
           if (error) {
             const { details } = error;
             const message = details.map((i) => i.message)[0];

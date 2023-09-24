@@ -5,3 +5,4 @@ test.js
 mochawesome-report/
 coverage/
 .nyc_output
+modeloSwagger.json
