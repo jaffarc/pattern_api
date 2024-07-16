@@ -1,7 +1,7 @@
 module.exports = [
   {
     method: "get",
-    argument: "/:id",
+    argument: "api/:id",
     description: "information api status",
     name: "info",
     validate: "infoSchema",

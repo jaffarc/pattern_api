@@ -14,7 +14,7 @@ function middlewareValidate(property, schema, name) {
       for (let i = 0; i < property.length; i++) {
         let vt = typeIN[property[i]];
 
-        console.log(vt)
+        // console.log(vt)
         if (schemas[property[i]] && req[property[i]]) {
 
           console.log('++++', property[i], schemas[vt], req[vt])

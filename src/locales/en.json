@@ -8,5 +8,6 @@
 	"name must be [ref:string]": "name must be [ref:string]",
 	"name contains an invalid value": "name contains an invalid value",
 	"objectId is required": "objectId is required",
-	"host is not allowed": "host is not allowed"
+	"host is not allowed": "host is not allowed",
+	"valor is required": "valor is required"
 }

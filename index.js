@@ -115,9 +115,6 @@ const setupServer = (isCluster) => {
         console.log(`Stopping worker: ${worker.process.pid}`);
         worker.disconnect();
       }
-    
-      // Exit the process after a short delay to allow workers to gracefully terminate
-
     });
     
 

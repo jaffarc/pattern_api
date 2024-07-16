@@ -1,17 +1,19 @@
-const validateType = (req, res, next) => {
-    try {
-        // let o = schema.validate();
-        let url = req._parsedUrl;
-        console.log(url)
-        console.log('OOO',req.method, url.query, url.pathname)
-      
-        next()
-    }
-    catch (err) {
-        console.log('CAIU no validate')
-        next(err);
-    }
-}
-module.exports ={
-    validateType
-}
+/**
+ * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado
+ */
+const validateType = (err, req, res, next) => {
+  if (
+    err instanceof SyntaxError &&
+    err.status >= 400 &&
+    err.status < 500 &&
+    err.message.indexOf("JSON") !== -1
+  ) {
+    return res
+      .status(500)
+      .jsonp({ sucess: false, result: "Object json invalid" });
+  }
+  next();
+};
+module.exports = {
+  validateType,
+};

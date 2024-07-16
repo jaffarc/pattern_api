@@ -31,12 +31,12 @@ app.use(
   urlencoded({ extended: true }),
 );
 const { validateType } = require('../src/api/middlewares/validateType')
-app.use(validateType);
+
 
 // app.use(buscarDados);
 
 // console.log(accessLogStream.token('combined'));
-app.all("*", (req, res, next) => {
+app.all("*",  (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATH");
   res.header("Access-Control-Allow-Headers", "Content-Type");
@@ -47,27 +47,27 @@ app.all("*", (req, res, next) => {
   next();
 });
 
+// const RouteLog = require('../src/utils/routeLog');
+// const route = {
+//   key: 'my-route',
+//   method: 'GET',
+//   url: '/my-route',
+//   controller: 'MyController',
+//   action: 'index',
+//   middlewares: [ 'auth', 'logger' ]
+// };
+// const log = new RouteLog(route);
 
-
-/**
- * @description Se os param enviado ocorrer um erro. interno no middleware JSON mal formado
- */
-app.use((err, req, res, next) => {
-  if (
-    err instanceof SyntaxError &&
-    err.status >= 400 &&
-    err.status < 500 &&
-    err.message.indexOf("JSON") !== -1
-  ) {
-    return res
-      .status(500)
-      .jsonp({ sucess: false, result: "Object json invalid" });
-  }
-  next();
-});
+// console.log(log);
 
 
 
 app.use(require("./api/router/Router"));
+app.use(validateType);
+
+app.use((req, res, next) => {
+  res.redirect('/api-docs');
+  next()
+})
 
 module.exports = app;
